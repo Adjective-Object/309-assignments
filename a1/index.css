@@ -10,7 +10,7 @@ body{
 }
 
 header, footer, #nav, #side_panel, #body{
-	border:1px solid #EFEFEF;
+	border:2px solid #DA727E;
 	background-color:#EAEAEA;
 	margin:12px;
 	font-size:24px;
