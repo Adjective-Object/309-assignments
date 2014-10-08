@@ -24,28 +24,30 @@ function makeshake(animtime, intensity){
 	return shaker;
 }
 
-function fadeIn(animtime){
-	var fade = function(t, graphic){
+function fade(animtime, start, end){
+	var f = function(t, graphic){
 		if (t>animtime){
-			graphic.alpha = 1;
+			graphic.alpha = end;
 			return graphic;
 		}
 
-		graphic.alpha = ease(t/animtime)
+		graphic.alpha = start + (end-start) * ease(t/animtime)
 		return graphic;
 	}
-	return fade;
+	return f;
 }
 
-function scaleIn(animtime, initial){
+function scale(animtime, start, end){
 	var zoom = function(t, graphic){
 
 		if(t>animtime){
-			graphic.scale = 1;
+			graphic.xscale = end;
+			graphic.yscale = end;
 			return graphic;
 		}
 
-		graphic.scale = initial + (1-initial) * ease(t/animtime)
+		graphic.xscale = start + (end-start) * ease(t/animtime)
+		graphic.yscale = start + (end-start) * ease(t/animtime)
 		return graphic;
 	}
 	return zoom;

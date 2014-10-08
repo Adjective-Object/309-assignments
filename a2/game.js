@@ -1,17 +1,4 @@
-
-/* Game Logic */
-function updateGame(elems, input, tstep){
-	input.update();
-	for (var i=0; i< elems.length; i++){
-		elems[i].update(input, tstep);
-	}
-}
-
-/* Initialize the canvas */
-var canvas = document.getElementById("game");
-var context = canvas.getContext("2d");
-var canvaswidth = canvas.width;
-var canvasheight = canvas.height;
+/* control constants */
 var bkgcolor = "#282A2E";
 var playercolor = "#C5C8C6";
 var tilecolors = [
@@ -23,9 +10,76 @@ var tilecolors = [
 	"#B294BB"
 ];
 
+extpadding = 32;
+tilepadding = 16;
+tileheight = 32;
+tilewidth = 81.6;
+
+font = '48pt Droid Sans Mono';
+textAlign = 'center';
+
+
+/* Initialize the canvas */
+var canvas = document.getElementById("game");
+var context = canvas.getContext("2d");
+
+
+/* globalinformation variables and flags*/
+var canvaswidth = canvas.width;
+var canvasheight = canvas.height;
+
+var started = false;
+var gameover = false;
+var statechangehandled = true;
+
+var elems, blocks, player, ball
+
+context.font = font;
+context.textAlign = textAlign;
+
+
+/* Initialize the input system */
+var input = new InputTracker(true) //disabled at start
+document.addEventListener('keydown', 
+	function(e){input.keydown(e)},
+	false);
+document.addEventListener('keyup',
+	function(e){input.keyup(e)},
+	false);
+
+function gameLose(){
+	gameover = true;
+	statechangehandled = false;
+	
+	input.enabled = false;
+	setTimeout(function(){
+		input.enabled = true;
+	}, 1500)
+}
+
+function gameReset(){
+	started = false;
+	gameover = false
+	statechangehandled = false
+
+	input.enabled = false;
+	setTimeout(function(){
+		input.enabled = true;
+	}, 1500)
+}
+
+
+/* Game Logic */
+function updateGame(elems, input, tstep){
+	input.update();
+	for (var i=0; i<elems.length; i++){
+		elems[i].update(input, tstep);
+	}
+}
+
 function renderGame(context, elems){
 	context.fillStyle = bkgcolor;
-	context.globalAlpha=0.3;
+	context.globalAlpha=0.6;
 	context.fillRect(0,0,canvaswidth, canvasheight)
 	for (var i=0; i< elems.length; i++){
 		elems[i].render(context);
@@ -33,114 +87,68 @@ function renderGame(context, elems){
 	context.globalAlpha=1;
 }
 
-extpadding = 32;
-tilepadding = 16;
-tileheight = 32;
-tilewidth = 81.6;
-
-function makeField(){	
-	var elems = Array();
-	for(var y=0; y<tilecolors.length; y++){
-		for(var x=0; x<10; x++){
-			var e = new Elem(
-				extpadding+(tilewidth+tilepadding)*x,
-				extpadding+(tileheight+tilepadding)*y, 
-				tilewidth, 
-				tileheight, tilecolors[y]);
-			
-			e.animation = (
-				delayAnim(
-					multiAnim(
-						fadeIn(500),
-						scaleIn(600, 0.9),
-						zoomIn(500, 
-							0, 
-							128+10*Math.random()
-						)),
-					((5-Math.abs(x-4.5))*5+y*10)*10+
-						10*Math.random()
-				));
-			
-			elems.push(e);
+function stripDeadObjects(elems){
+	for (var i=0; i< elems.length; i++){
+		if (!elems[i].alive){
+			elems.splice(i,1);
 		}
 	}
-	return elems;
+	return elems
 }
 
-function makePlayer(){
-	var p = new Player(
-		canvaswidth/2-64, 
-		canvasheight-132,
-		128, 32, "#C5C8C6");
-
-	p.animation = delayAnim(
-		multiAnim(
-			fadeIn(500),
-			scaleIn(600, 0.9),
-			zoomIn(500, 0,
-				128+10*Math.random()
-			)), 1000);
-	return p;
+function killAll(lst){
+	for (var i=0; i<lst.length; i++){
+		if(lst[i].active){
+			lst[i].destroy();
+		}
+	}
 }
 
-function makeBall(){
-	var b = new Ball(
-		canvaswidth/2-8, 
-		canvasheight-132-24,
-		16, "#C5C8C6");
-
-	b.animation = delayAnim(
-		multiAnim(
-			fadeIn(500),
-			scaleIn(600, 0.9),
-			zoomIn(500, 0,
-				128+10*Math.random()
-			)), 1000);
-	return b
-}
 
 function run(){
 	/* initialize timing and input */
 	var lastupdate = new Date().getTime();
-	var input = new InputTracker(true) //disabled
-
-	document.addEventListener('keydown', 
-		function(e){input.keydown(e)},
-		false);
-	document.addEventListener('keyup',
-		function(e){input.keyup(e)},
-		false);
-
-	/* Initialize game elements */
-	var elems = Array();
-	var blocks = makeField();
-	elems = elems.concat(blocks);
+	elems = new Array();
+	elems = makeInitialScreen(elems);
 	
-	var player = makePlayer();
-	elems.push(player);
-
-	var ball = makeBall();
-	elems.push(ball);
-
-	/* set timeout on game start */
+	/* set timeout on game start for loading animation to complete*/
 	setTimeout(function(){
-		console.log("game start");
 		input.enabled = true;
 	}, 1500)
 
+
+	/* mainloop with fps controlled by timer callbacks*/
 	function mainloop(){
 		var newtime = new Date().getTime();
 
-		ball.collideAll(blocks);
+		//gameover game
+		if(gameover && !statechangehandled){
+			statechangehandled = true;
+			killAll(elems)
+			elems = makeGameOverScreen(elems);
+		} 
+		//restart game
+		else if (!statechangehandled){
+			statechangehandled = true;
+			killAll(elems);
+			elems = makeInitialScreen(elems);
+		}
 
+		elems = stripDeadObjects(elems);
 		updateGame(elems, input, newtime - lastupdate);
-		renderGame(context, elems);
 
+
+		ball.collideAll(blocks);
+		ball.collidePaddle(player);
 		lastupdate = newtime;
 
+		/* cap fps at 60 */
 		setTimeout(mainloop, 
-			1000/60);
+			1000/120 - (new Date().getTime() - lastupdate));
+
+		renderGame(context, elems);
 	}
+
 	mainloop();
 }
 

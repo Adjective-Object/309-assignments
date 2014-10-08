@@ -26,157 +26,262 @@ function Elem(x, y, width, height, color){
 	this.logic = new Rect(x, y, width, height);
 	this.graphic = new GRect(color);
 
+	this.active = true;
+	this.alive = true;
 	this.animationtime = 0;
 	this.animation = nilanim;
-
-	this.update = function(input, tstep){
+}
+Elem.prototype = {
+	update: function(input, tstep){
 		// update animation
 		this.animationtime += tstep;
 		this.graphic = this.animation(
 			this.animationtime,
 			this.graphic);
-	};
+	},
 
-	this.render = function(context){
+	draw: function(context){
+		context.fillRect(
+			-this.logic.width/2,
+			-this.logic.height/2, 
+			this.logic.width,
+			this.logic.height);
+	},
+
+	render: function(context){
 		var sx = this.graphic.x + this.logic.x;
 		var sy = this.graphic.y + this.logic.y;
 
-		var w2 = this.logic.width/2 * this.graphic.xscale;
-		var h2 = this.logic.height/2 * this.graphic.yscale;
-
 		context.translate(
-			sx+w2, 
-			sy+h2);
+			sx+this.logic.width/2,
+			sy+this.logic.height/2);
 		context.rotate(-this.graphic.rotation);
 
 		context.globalAlpha = this.graphic.alpha;
 		context.fillStyle = this.graphic.color;
 
-		context.fillRect(
-			-w2,
-			-h2, 
-			this.logic.width*this.graphic.xscale, 
-			this.logic.height*this.graphic.yscale);
+		context.scale(
+			this.graphic.xscale,
+			this.graphic.yscale);
+
+		//actual drawing content
+		this.draw(context);
+
+		context.scale(
+			1/this.graphic.xscale,
+			1/this.graphic.yscale);
 
 		context.globalAlpha = 1;
 
 		context.rotate(this.graphic.rotation);
 		context.translate(
-			-sx-w2,
-			-sy-h2);
-	};
-}
+			-sx-this.logic.width/2,
+			-sy-this.logic.height/2);
+	},
+
+	destroy: function(){
+		this.active = false;
+		this.animationtime = 0;
+		this.animation = multiAnim(
+			scale(100,1,0.2),
+			fade(100,1,0));
+
+		setTimeout(
+			function() {this.alive = false}, 200);
+	}
+};
+
 
 function Player(x, y, width, height, color){
 	Elem.call(this,x,y,width,height,color);
 
-	this.momentum = 0;
-	this.maxspeed = 50;
-	this.speed = 10;
-	this.friction = 0.6;
+	this.velocity = 0;
+	this.maxmovespeed = 800;
+	this.movespeed = 200;
+	this.friction = 0.01;
+}
+Player.prototype = new Elem;
+Player.prototype.update = function(input, tstep){
+	Elem.prototype.update.call(this, input, tstep);
 
-	supdate = this.update;
-	this.update = function(input, tstep){
-		supdate.call(this, input, tstep);
+	this.logic.x += this.velocity * tstep/1000;
 
-		this.logic.x += this.momentum;
-
+	if (started){
 		if (input.down.left) {
-			this.momentum = Math.max(-this.maxspeed, this.momentum-this.speed);
+			this.velocity = Math.max(-this.maxmovespeed, this.velocity-this.movespeed);
 		}
 		if (input.down.right) {
-			this.momentum = Math.min(this.maxspeed, this.momentum+this.speed);
+			this.velocity = Math.min(this.maxmovespeed, this.velocity+this.movespeed);
 		}
-
-		this.momentum = this.momentum * this.friction;
-		if (this.logic.x < 32){
-			this.logic.x = 32;
-			this.momentum = 0;
-		}
-		if (this.logic.x > canvaswidth-this.logic.width-32){
-			this.logic.x = canvaswidth-this.logic.width-32;
-			this.momentum = 0;
-		}
-
 	}
+
+	this.velocity = (this.velocity - 
+		(this.velocity * this.friction * tstep));
+
+	if (this.logic.x < 32){
+		this.logic.x = 32;
+		this.velocity = 0;
+	}
+	if (this.logic.x > canvaswidth-this.logic.width-32){
+		this.logic.x = canvaswidth-this.logic.width-32;
+		this.velocity = 0;
+	}
+
 }
+
 
 function Ball(x, y, size, color){
 	Elem.call(this,x,y,size,size,color);
 
-	this.speed = 10;
+	this.movespeed = 500;
 
-	this.momentum = new Point(0,0);
-	this.started = false;
+	this.velocity = new Point(0,0);
+}
+Ball.prototype = new Elem;
+Ball.prototype.update = function(input, tstep){
+	Elem.prototype.update.call(this, input, tstep);
 
-	supdate = this.update;
-	this.update = function(input, tstep){
-		supdate.call(this, input, tstep);
+	this.right = this.logic.x + this.logic.width;
+	this.bottom = this.logic.y + this.logic.height;
+	this.left = this.logic.x;
+	this.top = this.logic.y;
 
-		this.logic.x += this.momentum.x;
-		this.logic.y += this.momentum.y;
+	if(this.active){
+		this.logic.x += this.velocity.x * tstep/1000;
+		this.logic.y += this.velocity.y * tstep/1000;
 
-		if(!this.started && input.just.space){
-			this.started = true;
-			this.momentum.x = Math.random()*this.speed - Math.random()*this.speed;
-			this.momentum.y = - (0.5 + Math.random())*this.speed;
+		if(!started && input.just.space){
+			started = true;
+			this.velocity.x = (Math.random()*this.movespeed 
+								- Math.random()*this.movespeed);
+			this.velocity.y = - (0.5 + Math.random())*this.movespeed;
 		}
 
 		if(this.logic.x < 16){
 			this.logic.x = 16;
-			this.momentum.x = Math.abs(this.momentum.x);
+			this.velocity.x = Math.abs(this.velocity.x);
 		}
 
 		if(this.logic.x + this.logic.width > canvaswidth - 16){
 			this.logic.x = canvaswidth - 16 - this.logic.width ;
-			this.momentum.x = -Math.abs(this.momentum.x);
+			this.velocity.x = -Math.abs(this.velocity.x);
 		}
 
 		if(this.logic.y < 16){
-			this.momentum.y = Math.abs(this.momentum.y);
+			this.velocity.y = Math.abs(this.velocity.y);
 			this.logic.y = 16;
 		}
 
 
-		if(this.logic.y > canvasheight - 16){
-			console.log("you lose");
-			this.momentum.y = - Math.abs(this.momentum.y);
-			this.logic.y = canvasheight - 16;
+		if(this.logic.y > canvasheight - 32){
+			gameLose();
+			this.velocity.y = - Math.abs(this.velocity.y);
+			this.logic.y = canvasheight - 32;
 		}
 	}
+}
 
-	this.collideAll = function(blocks){
-		this.right = this.logic.x + this.logic.x + this.logic.width;
-		this.bottom = this.logic.y + this.logic.y + this.logic.height;
-		this.left = this.logic.x;
-		this.top = this.logic.y;
+Ball.prototype.collidePaddle = function (paddle){
+	var paddleCollideCallback = function(paddle){
+		cx = this.logic.x + this.logic.width/2
+		cbx = paddle.logic.x + paddle.logic.width/2
 
-		for (var i=0; i<blocks; i++){
-			this.collide(blocks[i]);
-		}
+		this.velocity.x = (
+			0.5 * this.velocity.x +
+			0.3 * paddle.velocity +
+			0.2 * ((cx-cbx)/(paddle.logic.width/2) * this.movespeed));
+		this.velocity.y = -(0.5+Math.random())*this.movespeed;
 	}
 
-	this.collide = function(block){
-		//console.log("!");
-		blockright = block.logic.x + block.logic.width;
-		blockbottom = block.logic.y + block.logic.height;
-		blockleft = block.logic.x;
-		blocktop = block.logic.y;
+	this.collide(paddle, paddleCollideCallback);
+}
 
-		var r =(this.right > blockright && this.left < blockright);
-		var l = (this.right > blockleft  && this.left < blockleft);
-		var t = (this.top < blocktop && this.bottom > blocktop);
-		var b = (this.top < blockbottom && this.bottom > blockbottom);
+Ball.prototype.collideAll = function(blocks){
+	var blockCollideCallback = function(block){
+		block.destroy();
+		cy = this.logic.y + this.logic.height/2
+		cby = block.logic.y + block.logic.height/2
 
-		if (r&(t||b) || l&(t||b)) {
-			//collision
-			console.log("collision");
-			var centerx = this.logic.x + this.logic.width/2;
-			var centerbx = block.logic.x + block.logic.width/2;
-
-			this.momentum.x = centerx - centerbx;
-			this.momentum.y = (0.5+Math.random())*this.speed;
+		if(cy<cby){
+			this.velocity.y = -Math.abs(this.velocity.y);
+		} else if (cy>cby){
+			this.velocity.y = Math.abs(this.velocity.y);
 		}
 
+		this.velocity.y = (Math.abs(this.movespeed));
 	}
+
+	for (var i=0; i<blocks.length; i++){
+		if(blocks[i].active){
+			this.collide(blocks[i],blockCollideCallback);
+		}
+	}
+}
+
+Ball.prototype.collide = function(block, callback){
+	//console.log("!");
+	blockright = block.logic.x + block.logic.width;
+	blockbottom = block.logic.y + block.logic.height;
+	blockleft = block.logic.x;
+	blocktop = block.logic.y;
+
+	var l = (this.left < blockright);
+	var r = (this.right > blockleft);
+	var t = (this.top < blockbottom);
+	var b = (this.bottom > blocktop);
+
+	if ( (l&&r) && (t&&b) ){
+		//collision
+		
+		callback.call(this,block)
+	}
+}
+
+
+function ElemText(text,x,y,color){
+	Elem.call(this, x, y, 0, 0, color)
+	this.text = text;
+}
+ElemText.prototype = new Elem;
+ElemText.prototype.draw = function(context){
+	context.fillText(this.text,0,0);
+}
+
+ElemText.prototype.destroy = function(){
+	this.active = false;
+	this.animationtime = 0;
+	this.animation = multiAnim(
+		scale(100,1,0.2),
+		fade(100,1,0)
+		);
+	setTimeout(function() {this.alive = false;}, 200);
+}
+
+
+function DissapearText(text,x,y,color){
+	ElemText.call(this, text, x, y, color);
+}
+DissapearText.prototype = new ElemText;
+DissapearText.prototype.update = function(input, tstep){
+	ElemText.prototype.update.call(this, input, tstep);
+
+	if(this.active){
+		if(input.just.space){
+			this.destroy();
+		}
+	}
+}
+
+function GameReStarter(){
+	
+	this.alive = true;
+
+	this.update = function(input, tstep){
+		if (input.just.space){
+			this.alive = false;
+			gameReset();
+		}
+	};
+
+	this.render = function(canvas){};
 }
