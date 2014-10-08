@@ -1,41 +1,22 @@
-/* control constants */
-var bkgcolor = "#282A2E";
-var playercolor = "#C5C8C6";
-var tilecolors = [
-	"#A54242",
-	"#CC6666",
-	"#B5BD68",
-	"#F0C674",
-	"#81A2BE",
-	"#B294BB"
-];
-
-extpadding = 32;
-tilepadding = 16;
-tileheight = 32;
-tilewidth = 81.6;
-
-font = '48pt Droid Sans Mono';
-textAlign = 'center';
-
-
 /* Initialize the canvas */
 var canvas = document.getElementById("game");
 var context = canvas.getContext("2d");
 
 
-/* globalinformation variables and flags*/
+/* global information variables and flags*/
 var canvaswidth = canvas.width;
 var canvasheight = canvas.height;
 
+var STATE_LOSE = 0;
+var STATE_RESET = 1;
+var STATE_WIN 	= 2;
+
 var started = false;
-var gameover = false;
+var nextstate = null;
 var statechangehandled = true;
+var score = 0;
 
-var elems, blocks, player, ball
-
-context.font = font;
-context.textAlign = textAlign;
+var elems, blocks, player, ball, scoreText
 
 
 /* Initialize the input system */
@@ -47,8 +28,18 @@ document.addEventListener('keyup',
 	function(e){input.keyup(e)},
 	false);
 
+/* Global methods to be called by game objects*/
+function updateScore(block){
+	score += Math.floor((10*((canvasheight - block.logic.y)/canvasheight)));
+	//console.log("score", score);
+	scoreText.text = ""+score;
+	scoreText.fontsize = 24+(score/5);
+	scoreText.animation = multiAnim( scale(200,1.5,1), shake(250, (score/50)*(Math.random()-Math.random()) ));
+	scoreText.animationtime = 0;
+}
+
 function gameLose(){
-	gameover = true;
+	nextstate = STATE_LOSE;
 	statechangehandled = false;
 	
 	input.enabled = false;
@@ -58,14 +49,26 @@ function gameLose(){
 }
 
 function gameReset(){
+	nextstate = STATE_RESET;
 	started = false;
-	gameover = false
 	statechangehandled = false
+	score = 0;
 
 	input.enabled = false;
 	setTimeout(function(){
 		input.enabled = true;
 	}, 1500)
+}
+
+function checkWinstate(){
+	for (var i=0; i<blocks.length; i++) {
+		if (blocks[i].alive){
+			return
+		}
+	}
+	console.log("winstate!");
+	nextstate = STATE_WIN;
+	statechangehandled = false;
 }
 
 
@@ -87,13 +90,13 @@ function renderGame(context, elems){
 	context.globalAlpha=1;
 }
 
-function stripDeadObjects(elems){
-	for (var i=0; i< elems.length; i++){
-		if (!elems[i].alive){
-			elems.splice(i,1);
+function stripDeadObjects(lst){
+	for (var i=0; i< lst.length; i++){
+		if (!lst[i].alive){
+			lst.splice(i,1);
 		}
 	}
-	return elems
+	return lst
 }
 
 function killAll(lst){
@@ -104,6 +107,9 @@ function killAll(lst){
 	}
 }
 
+function spawn(e){
+	elems.push(e);
+}
 
 function run(){
 	/* initialize timing and input */
@@ -121,20 +127,31 @@ function run(){
 	function mainloop(){
 		var newtime = new Date().getTime();
 
-		//gameover game
-		if(gameover && !statechangehandled){
+		if (!statechangehandled){
+			//gameover game
+			if(nextstate == STATE_LOSE) {
+				killAll(elems)
+				elems = makeGameOverScreen(elems);
+			} 
+			//restart game
+			else if ( nextstate == STATE_RESET) {
+				killAll(elems);
+				elems = makeInitialScreen(elems);
+			}
+			//win game
+			else if (nextstate == STATE_WIN) {
+				killAll(elems);
+				elems = makeWinScreen(elems);
+			}
+			else {
+				console.log("unknown state change", nextstate)
+			}
+			nextstate = null;
 			statechangehandled = true;
-			killAll(elems)
-			elems = makeGameOverScreen(elems);
-		} 
-		//restart game
-		else if (!statechangehandled){
-			statechangehandled = true;
-			killAll(elems);
-			elems = makeInitialScreen(elems);
 		}
 
 		elems = stripDeadObjects(elems);
+		blocks = stripDeadObjects(blocks);
 		updateGame(elems, input, newtime - lastupdate);
 
 

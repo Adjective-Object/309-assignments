@@ -2,7 +2,7 @@
 function makeField(){	
 	var elems = Array();
 	for(var y=0; y<tilecolors.length; y++){
-		for(var x=0; x<10; x++){
+		for(var x=0; x<fieldwidth; x++){// this is 10
 			var e = new Elem(
 				extpadding+(tilewidth+tilepadding)*x,
 				extpadding+(tileheight+tilepadding)*y, 
@@ -78,8 +78,52 @@ function makeIntroText(){
 	return t;
 }
 
+function makeUI(){
+	var t = new ElemText(
+		"Score",
+		extpadding,
+		canvasheight-extpadding-64,
+		playercolor);
+	t.textAlign = "left";
+	t.fontsize = 24;
+
+	t.animation = delayAnim(
+		multiAnim(
+			fade(500, 0, 1),
+			scale(600, 0.95, 1),
+			zoomIn(500, 0,
+				128+10*Math.random()
+			)), 800);
+	return [t];
+}
+
+function makeScoreText(){
+	var t2 = new ElemText(
+			"0",
+			canvaswidth/2,
+			canvasheight/2,
+			playercolor);
+		t2.fontsize = 24;
+
+		t2.animation = delayAnim(
+			multiAnim(
+				fade(500, 0, 1),
+				scale(600, 0.95, 1),
+				zoomIn(500, 0,
+					128+10*Math.random()
+				)), 800);
+
+
+	return t2;
+}
 
 function makeInitialScreen(elems){
+	/* UI */
+	//elems = elems.concat(makeUI());
+	scoreText = makeScoreText();
+	scoreText.graphic.color = darktext;
+	elems.push(scoreText);
+
 	/* Initialize game elements */
 	blocks = makeField();
 	elems = elems.concat(blocks);
@@ -89,6 +133,8 @@ function makeInitialScreen(elems){
 
 	ball = makeBall();
 	elems.push(ball);
+
+
 
 	elems.push(makeIntroText());
 	return elems
@@ -126,6 +172,61 @@ function makeGameOverScreen(elems){
 
 	elems.push(t1);
 	elems.push(t2);
+
+	elems.push(new GameReStarter());
+
+	return elems;
+}
+
+
+function makeWinScreen(elems){
+	var t1 = new DissapearText(
+	"You Win!",
+	canvaswidth/2,
+	canvasheight/2-132,
+	playercolor);
+
+	t1.animation = delayAnim(
+		multiAnim(
+			fade(500, 0, 1),
+			scale(600, 0.95, 1),
+			zoomIn(500, 0,
+				128+10*Math.random()
+			)), 400);
+	
+
+	var t2 = new DissapearText(
+	"your score: "+score,
+	canvaswidth/2,
+	canvasheight/2,
+	playercolor);
+
+	t2.animation = delayAnim(
+		multiAnim(
+			fade(500, 0, 1),
+			scale(600, 0.95, 1),
+			zoomIn(500, 0,
+				128+10*Math.random()
+			)), 500);
+
+	var t3 = new DissapearText(
+	"press space to play again",
+	canvaswidth/2,
+	canvasheight/2 + 132,
+	playercolor);
+
+	t3.animation = delayAnim(
+		multiAnim(
+			fade(500, 0, 1),
+			scale(600, 0.95, 1),
+			zoomIn(500, 0,
+				128+10*Math.random()
+			)), 600);
+
+
+	elems.push(t1);
+	elems.push(t2);
+	elems.push(t3);
 
 	elems.push(new GameReStarter());
 

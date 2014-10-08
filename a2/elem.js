@@ -42,10 +42,10 @@ Elem.prototype = {
 
 	draw: function(context){
 		context.fillRect(
-			-this.logic.width/2,
-			-this.logic.height/2, 
-			this.logic.width,
-			this.logic.height);
+			-this.logic.width/2 	* this.graphic.xscale,
+			-this.logic.height/2  	* this.graphic.yscale, 
+			this.logic.width 		* this.graphic.xscale,
+			this.logic.height 	 	* this.graphic.yscale);
 	},
 
 	render: function(context){
@@ -79,15 +79,21 @@ Elem.prototype = {
 			-sy-this.logic.height/2);
 	},
 
-	destroy: function(){
+	destroy: function(callback){
 		this.active = false;
 		this.animationtime = 0;
 		this.animation = multiAnim(
 			scale(100,1,0.2),
 			fade(100,1,0));
 
+		tokill = this
 		setTimeout(
-			function() {this.alive = false}, 200);
+			function() {
+				tokill.alive = false
+				if (callback){
+					callback()
+				}
+			}, 200);
 	}
 };
 
@@ -198,7 +204,7 @@ Ball.prototype.collidePaddle = function (paddle){
 
 Ball.prototype.collideAll = function(blocks){
 	var blockCollideCallback = function(block){
-		block.destroy();
+		block.destroy( function(){setTimeout(checkWinstate, 1000)} ) ;
 		cy = this.logic.y + this.logic.height/2
 		cby = block.logic.y + block.logic.height/2
 
@@ -208,12 +214,25 @@ Ball.prototype.collideAll = function(blocks){
 			this.velocity.y = Math.abs(this.velocity.y);
 		}
 
-		this.velocity.y = (Math.abs(this.movespeed));
+		/*
+		num = 5 + score/ 100 * intensity * (1+Math.random());
+		for (var i=0; i<num; i++){
+			spawn(new Sparker(
+				block.logic.x, 
+				block.logic.y, 
+				block.graphic.color,
+				200+300*Math.random() ));
+		}*/
+
+		updateScore(this);
 	}
 
 	for (var i=0; i<blocks.length; i++){
 		if(blocks[i].active){
-			this.collide(blocks[i],blockCollideCallback);
+			this.collide(
+				blocks[i],
+				blockCollideCallback
+				);
 		}
 	}
 }
@@ -241,10 +260,14 @@ Ball.prototype.collide = function(block, callback){
 function ElemText(text,x,y,color){
 	Elem.call(this, x, y, 0, 0, color)
 	this.text = text;
+	this.textAlign = "center";
+	this.fontsize = 64
 }
 ElemText.prototype = new Elem;
 ElemText.prototype.draw = function(context){
-	context.fillText(this.text,0,0);
+	context.textAlign = this.textAlign;
+	context.font = 	this.font = this.fontsize+"px "+uifont;
+	context.fillText(this.text,0,this.fontsize/4);
 }
 
 ElemText.prototype.destroy = function(){
@@ -284,4 +307,36 @@ function GameReStarter(){
 	};
 
 	this.render = function(canvas){};
+}
+
+function Sparker(x,y,color,life) {
+	Elem.call(this, x, y, 16, 16, color);
+
+	this.animation = multiAnim( 
+		fade(life, 1, 0)
+	);
+	
+	this.velocity = new Point()
+	this.velocity.x = intensity*120 * (Math.random() - Math.random())
+	this.velocity.y = intensity*120 * (Math.random() - Math.random())
+
+	this.friction = 0.0005;
+
+	t = this;
+	setTimeout(function(){
+		t.active = false;
+		t.alive = false;
+	}, life);
+}
+Sparker.prototype = new Elem;
+Sparker.prototype.update = function(input, tstep){
+	Elem.prototype.update.call(this,input,tstep);
+
+	this.velocity.x = (this.velocity.x - 
+		(this.velocity.x * this.friction * tstep));
+	this.velocity.y = (this.velocity.y - 
+		(this.velocity.y * this.friction * tstep));
+
+	this.logic.x += this.velocity.x * tstep/1000;
+	this.logic.y += this.velocity.y * tstep/1000;
 }

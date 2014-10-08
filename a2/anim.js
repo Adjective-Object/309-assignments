@@ -8,7 +8,7 @@ function nilanim(t, graphic){
 	return graphic;
 }
 
-function makeshake(animtime, intensity){
+function shake(animtime, intensity){
 	var shaker = function(t, graphic){
 		if (t>animtime){
 			graphic.rotation = 0;
