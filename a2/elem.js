@@ -163,7 +163,7 @@ Ball.prototype.update = function(input, tstep){
 
 		if(!started && input.just.space){
 			started = true;
-			this.goToAngle(Math.random()*Math.PI/2+Math.PI/4);
+			this.goToAngle(Math.random() * Math.PI / 2 + Math.PI / 4);
 		} if (!started){
 			this.logic.x = player.logic.x + player.logic.width/2 - this.logic.width/2;
 		}
@@ -185,9 +185,16 @@ Ball.prototype.update = function(input, tstep){
 
 
 		if(this.logic.y > canvasheight - extpadding){
-			gameLose();
-			this.velocity.y = - Math.abs(this.velocity.y);
-			this.logic.y = canvasheight - extpadding;
+			lives = lives - 1;
+			if(lives === 0) { gameLose(); } // No more lives left, game over.
+			else {
+
+				// Reset positions with same block state but minus one life
+				started = false;
+				this.logic.y = canvasheight - 64 - 24; // Default y position, default x position is bound to !started
+				ball.velocity.x = 0;
+				ball.velocity.y = 0;
+			 } 
 		}
 	}
 }

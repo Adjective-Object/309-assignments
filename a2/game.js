@@ -5,10 +5,10 @@ var STATE_LOSE = 0;
 var STATE_RESET = 1;
 var STATE_WIN 	= 2;
 
+
+var lives = 3; // Number of lives a player starts with
 var started = false;
-
 var width_halved = false;
-
 var elems, blocks, player, ball, scoreText
 
 	/* Initialize the canvas */2
@@ -19,7 +19,7 @@ var elems, blocks, player, ball, scoreText
 	canvaswidth = canvas.width;
 	canvasheight = canvas.height;
 
-	tilewidth = (canvaswidth - (fieldwidth*tilepadding) - 2*(extpadding)) / fieldwidth;
+	tilewidth = (canvaswidth - (fieldwidth * tilepadding) - 2 * (extpadding)) / fieldwidth;
 
 	var nextstate = null;
 	var statechangehandled = true;
@@ -56,20 +56,20 @@ var elems, blocks, player, ball, scoreText
 	function gameLose(){
 		nextstate = STATE_LOSE;
 		statechangehandled = false;
-		
+		lives = 3;
+
 		input.enabled = false;
 		setTimeout(function(){
 			input.enabled = true;
 		}, 1500)
 	}
 
-	function gameReset(){
+
+	function gameReset() {  // Resets game state upon level completion
 		nextstate = STATE_RESET;
 		started = false;
 		statechangehandled = false
-
 		width_halved = false;
-
 		input.enabled = false;
 		setTimeout(function(){
 			input.enabled = true;
