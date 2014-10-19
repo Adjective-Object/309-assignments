@@ -98,7 +98,7 @@ Elem.prototype = {
 	}
 };
 
-//
+// Player Object
 function Player(x, y, width, height, color){
 	Elem.call(this, x , y, width, height, color);
 
@@ -136,7 +136,7 @@ Player.prototype.update = function(input, tstep){
 
 }
 
-
+// Ball Object
 function Ball(x, y, size, color){
 	Elem.call(this,x,y,size,size,color);
 
@@ -187,7 +187,7 @@ Ball.prototype.update = function(input, tstep){
 			this.logic.y = extpadding;
 		}
 
-
+		// Ball enters dead zone
 		if(this.logic.y > canvasheight - extpadding){
 			lives = lives - 1;
 			livesText.text = "Lives: " + lives;
@@ -325,6 +325,7 @@ ElemText.prototype.destroy = function(){
 function WowText(text, x, y, color){
 	ElemText.call(this, text, x, y, color);
 }
+
 WowText.prototype = new ElemText;
 WowText.prototype.destroy = function(){
 	this.active = false;
@@ -340,6 +341,7 @@ WowText.prototype.destroy = function(){
 function DissapearText(text, x, y, color){
 	ElemText.call(this, text, x, y, color);
 }
+
 DissapearText.prototype = new ElemText;
 DissapearText.prototype.update = function(input, tstep){
 	ElemText.prototype.update.call(this, input, tstep);
@@ -351,10 +353,8 @@ DissapearText.prototype.update = function(input, tstep){
 	}
 }
 
-function GameReStarter(){
-	
+function GameReStarter() {	
 	this.alive = true;
-
 	this.update = function(input, tstep){
 		if (input.just.space){
 			this.alive = false;
@@ -362,21 +362,17 @@ function GameReStarter(){
 			gameReset();
 		}
 	};
-
 	this.render = function(canvas){};
 }
 
 function GameIncrementer(){
-	
 	this.alive = true;
-
 	this.update = function(input, tstep){
 		if (input.just.space){
 			this.alive = false;
 			gameReset();
 		}
 	};
-
 	this.render = function(canvas){};
 }
 
