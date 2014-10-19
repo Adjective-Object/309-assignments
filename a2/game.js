@@ -45,10 +45,7 @@ var elems, blocks, player, ball, scoreText
 								scale(200,1.5,1), 
 								shake(250, (score/50)*(Math.random()-Math.random()) ));
 		scoreText.animationtime = 0;
-
-		console.log(block);
-		console.log(block.graphic.color);
-
+		
 		if(block.graphic.color == tilecolors[0] && !width_halved){
 			width_halved = true;
 			player.logic.x = player.logic.x + player.logic.width/4;

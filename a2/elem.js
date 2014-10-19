@@ -144,6 +144,12 @@ function Ball(x, y, size, color){
 	this.velocity = new Point(0,0);
 }
 Ball.prototype = new Elem;
+
+Ball.prototype.goToAngle = function(rad){
+	this.velocity.x = Math.cos(rad)*this.movespeed;
+	this.velocity.y = -Math.sin(rad)*this.movespeed;
+}
+
 Ball.prototype.update = function(input, tstep){
 	Elem.prototype.update.call(this, input, tstep);
 
@@ -158,9 +164,7 @@ Ball.prototype.update = function(input, tstep){
 
 		if(!started && input.just.space){
 			started = true;
-			this.velocity.x = (Math.random()*this.movespeed 
-								- Math.random()*this.movespeed);
-			this.velocity.y = - (0.5 + Math.random())*this.movespeed;
+			this.goToAngle(Math.random()*Math.PI/2+Math.PI/4);
 		}
 
 		if(this.logic.x < 16){
@@ -192,19 +196,38 @@ Ball.prototype.collidePaddle = function (paddle){
 		cx = this.logic.x + this.logic.width/2
 		cbx = paddle.logic.x + paddle.logic.width/2
 
-		this.velocity.x = (
-			0.5 * this.velocity.x +
-			0.3 * paddle.velocity +
-			0.2 * ((cx-cbx)/(paddle.logic.width/2) * this.movespeed));
-		this.velocity.y = -(0.5+Math.random())*this.movespeed;
-	}
+		angle = Math.atan2(this.velocity.y , this.velocity.x);
 
-	this.collide(paddle, paddleCollideCallback);
+		
+		angle = (angle
+			- (Math.PI/4 * paddle.velocity/paddle.maxmovespeed)
+			+ (Math.PI/16 * (cbx-cx)/paddle.logic.width)
+			);
+
+		if(angle>Math.PI*7/8){
+			angle = Math.PI*7/8;
+		}
+
+		if(angle<Math.PI*1/8){
+			angle = Math.PI*1/8;
+		}
+		
+		console.log(angle/ Math.PI);
+
+		this.goToAngle(angle);
+	}
+	if(this.velocity.y>0){
+		this.collide(paddle, paddleCollideCallback);
+	}
 }
 
 Ball.prototype.collideAll = function(blocks){
 	var blockCollideCallback = function(block){
-		block.destroy( function(){setTimeout(checkWinstate, 200)} ) ;
+		//TODO ball collission logic
+		this.movepeed = this.movespeed * 1.1;
+		
+		block.destroy( function(){checkWinstate} );
+
 		cy = this.logic.y + this.logic.height/2
 		cby = block.logic.y + block.logic.height/2
 
