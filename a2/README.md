@@ -1,10 +1,15 @@
 #Assignment 2: Breakout
+c3huangk/g3gohnic
 
 An implementation of the game breakout for A2 of CSC309 Fall 2014.
 
-TODO:
+AMI ID: <not yet created>  
+works in chrome, untested in firefox.  
 
-- scoring system (back bricks worth more)
-- lives? (is this even something we want done?)
-- something other than Math.random() for the vertical momentum of the block after colliding with the paddle
-- add more "juice" (particles, background effects)
+The apache server should be running by default. If not, run
+`sudo apachectl start`
+
+If for some reason the wrong assignment is being 
+showed  on the server, run
+`/home/ubuntu/309-assignments/a2/setupwww`
+which should copy the relevant files to the apache www/html folder.

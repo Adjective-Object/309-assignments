@@ -193,6 +193,7 @@ Ball.prototype.update = function(input, tstep){
 			else {
 
 				// Reset positions with same block state but minus one life
+				
 				started = false;
 				this.logic.y = canvasheight - 64 - 24; // Default y position, default x position is bound to !started
 				ball.velocity.x = 0;
