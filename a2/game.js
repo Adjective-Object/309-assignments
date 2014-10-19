@@ -26,7 +26,7 @@ var elems, blocks, player, ball, scoreText, livesText
 	var score = 0;
 
 	/* Initialize the input system */
-	var input = new InputTracker(true) //disabled at start
+	var input = new InputTracker(true) // Disabled at start
 	document.addEventListener('keydown', 
 		function(e){input.keydown(e)},
 		false);
@@ -35,8 +35,8 @@ var elems, blocks, player, ball, scoreText, livesText
 		false);
 
 	/* Global methods to be called by game objects*/
-	function updateScore(block){
-		score += Math.floor((10*((canvasheight - block.logic.y)/canvasheight)));
+	function updateScore(block) {
+		score += Math.floor((10 * ((canvasheight - block.logic.y)/canvasheight)));
 		//console.log("score", score);
 		scoreText.text = ""+score;
 		scoreText.fontsize = 24+(score/5);
@@ -53,7 +53,7 @@ var elems, blocks, player, ball, scoreText, livesText
 		}
 	}
 
-	function gameLose(){
+	function gameLose() { // Called when lives === 0
 		nextstate = STATE_LOSE;
 		statechangehandled = false;
 		lives = 3;
@@ -76,8 +76,8 @@ var elems, blocks, player, ball, scoreText, livesText
 		}, 1500)
 	}
 
-	function checkWinstate(){
-		console.log("checking winstate");
+	function checkWinstate() {
+		console.log("Checking winstate");
 		if(statechangehandled){
 			for (var i=0; i<blocks.length; i++) {
 				if (blocks[i].active){
@@ -92,26 +92,26 @@ var elems, blocks, player, ball, scoreText, livesText
 
 
 	/* Game Logic */
-	function updateGame(elems, input, tstep){
+	function updateGame(elems, input, tstep) {
 		input.update();
-		for (var i=0; i<elems.length; i++){
+		for (var i=0; i < elems.length; i++) {
 			elems[i].update(input, tstep);
 		}
 	}
 
-	function renderGame(context, elems){
+	function renderGame(context, elems) {
 		context.fillStyle = bkgcolor;
 		context.globalAlpha=1;
 		//context.globalAlpha=0.6;
 		context.fillRect(0,0,canvaswidth, canvasheight)
-		for (var i=0; i< elems.length; i++){
+		for (var i=0; i< elems.length; i++) {
 			elems[i].render(context);
 		}
 		context.globalAlpha=1;
 	}
 
-	function stripDeadObjects(lst){
-		for (var i=0; i< lst.length; i++){
+	function stripDeadObjects(lst) {
+		for (var i=0; i < lst.length; i++) {
 			if (!lst[i].alive){
 				lst.splice(i,1);
 			}
@@ -119,46 +119,49 @@ var elems, blocks, player, ball, scoreText, livesText
 		return lst
 	}
 
-	function killAll(lst){
-		for (var i=0; i<lst.length; i++){
+	function killAll(lst) {
+		for (var i=0; i < lst.length; i++) {
 			if(lst[i].active){
 				lst[i].destroy();
 			}
 		}
 	}
 
-	function spawn(e){
+	function spawn(e) {
 		elems.push(e);
 	}
 
-	function run(){
+	function run() {
 		/* initialize timing and input */
 		var lastupdate = new Date().getTime();
 		elems = new Array();
 		elems = makeInitialScreen(elems);
 		
 		/* set timeout on game start for loading animation to complete*/
-		setTimeout(function(){
+		setTimeout(function() {
 			input.enabled = true;
 		}, 1500)
 
 
 		/* mainloop with fps controlled by timer callbacks*/
-		function mainloop(){
+		function mainloop() {
 			var newtime = new Date().getTime();
 
 			if (!statechangehandled){
-				//gameover game
+
+				// Game over
 				if(nextstate == STATE_LOSE) {
 					killAll(elems)
 					elems = makeGameOverScreen(elems);
 				} 
-				//restart game
+
+				// Restart game
 				else if ( nextstate == STATE_RESET) {
 					killAll(elems);
 					elems = makeInitialScreen(elems);
 				}
-				//win game
+
+				// Win game
 				else if (nextstate == STATE_WIN) {
 					killAll(elems);
 					elems = makeWinScreen(elems);
