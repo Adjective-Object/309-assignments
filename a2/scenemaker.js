@@ -6,7 +6,7 @@ function makeField(){
 			var e = new Elem(
 				extpadding+(tilewidth+tilepadding)*x,
 				extpadding+(tileheight+tilepadding)*y, 
-				tilewidth, 
+				tilewidth,
 				tileheight, tilecolors[y]);
 			
 			e.animation = (
@@ -18,7 +18,7 @@ function makeField(){
 							0, 
 							128+10*Math.random()
 						)),
-					((5-Math.abs(x-4.5))*5+y*10)*10+
+					((5-Math.abs(x-fieldwidth/2))*5+y*10)*10+
 						10*Math.random()
 				));
 			
@@ -30,9 +30,9 @@ function makeField(){
 
 function makePlayer(){
 	var p = new Player(
-		canvaswidth/2-64, 
+		canvaswidth/2-128, 
 		canvasheight-64,
-		128, 32, playercolor);
+		256, 32, playercolor);
 
 	p.animation = delayAnim(
 		multiAnim(
@@ -64,7 +64,7 @@ function makeIntroText(){
 	var t = new DissapearText(
 		"press space to start",
 		canvaswidth/2,
-		canvasheight/2,
+		canvasheight/2 + 128,
 		playercolor);
 
 	t.animation = delayAnim(
@@ -105,15 +105,6 @@ function makeScoreText(){
 			playercolor);
 		t2.fontsize = 24;
 
-		t2.animation = delayAnim(
-			multiAnim(
-				fade(500, 0, 1),
-				scale(600, 0.95, 1),
-				zoomIn(500, 0,
-					128+10*Math.random()
-				)), 800);
-
-
 	return t2;
 }
 
@@ -121,7 +112,8 @@ function makeInitialScreen(elems){
 	/* UI */
 	//elems = elems.concat(makeUI());
 	scoreText = makeScoreText();
-	scoreText.graphic.color = darktext;
+	scoreText.graphic.color = darktext
+	scoreText.graphic.alpha = 0;
 	elems.push(scoreText);
 
 	/* Initialize game elements */
@@ -228,7 +220,7 @@ function makeWinScreen(elems){
 	elems.push(t2);
 	elems.push(t3);
 
-	elems.push(new GameReStarter());
+	elems.push(new GameIncrementer());
 
 	return elems;
 }

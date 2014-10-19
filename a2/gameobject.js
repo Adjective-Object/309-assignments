@@ -59,9 +59,3 @@ function Elem(x, y, width, height, color){
 			-this.graphic.y-this.graphic.height/2);
 	};
 }
-
-function Player(x, y, width, height, color){
-	this.prototype = Elem.prototype;
-
-
-}

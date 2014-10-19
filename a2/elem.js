@@ -204,7 +204,7 @@ Ball.prototype.collidePaddle = function (paddle){
 
 Ball.prototype.collideAll = function(blocks){
 	var blockCollideCallback = function(block){
-		block.destroy( function(){setTimeout(checkWinstate, 1000)} ) ;
+		block.destroy( function(){setTimeout(checkWinstate, 200)} ) ;
 		cy = this.logic.y + this.logic.height/2
 		cby = block.logic.y + block.logic.height/2
 
@@ -224,7 +224,7 @@ Ball.prototype.collideAll = function(blocks){
 				200+300*Math.random() ));
 		}*/
 
-		updateScore(this);
+		updateScore(block);
 	}
 
 	for (var i=0; i<blocks.length; i++){
@@ -281,6 +281,21 @@ ElemText.prototype.destroy = function(){
 }
 
 
+function WowText(text,x,y,color){
+	ElemText.call(this, text,x,y,color);
+}
+WowText.prototype = new ElemText;
+WowText.prototype.destroy = function(){
+	this.active = false;
+	this.animationtime = 0;
+	this.animation = multiAnim(
+		scale(400,1,0.2),
+		fade(400,1,0)
+		);
+	setTimeout(function() {this.alive = false;}, 200);
+}
+
+
 function DissapearText(text,x,y,color){
 	ElemText.call(this, text, x, y, color);
 }
@@ -302,6 +317,23 @@ function GameReStarter(){
 	this.update = function(input, tstep){
 		if (input.just.space){
 			this.alive = false;
+			score = 0
+			gameReset();
+		}
+	};
+
+	this.render = function(canvas){};
+}
+
+function GameIncrementer(){
+	
+	this.alive = true;
+
+	this.update = function(input, tstep){
+		if (input.just.space){
+			this.alive = false;
+			tilewidth = canvaswidth - 2*(paddingext) / fieldwidth
+
 			gameReset();
 		}
 	};
@@ -339,4 +371,15 @@ Sparker.prototype.update = function(input, tstep){
 
 	this.logic.x += this.velocity.x * tstep/1000;
 	this.logic.y += this.velocity.y * tstep/1000;
+}
+
+
+function Img(src, x, y){
+	this.img = new Image();
+	this.img.src = src;
+	Elem.call(this, x, y, this.img.naturalWidth, this.img.naturalHeight);
+}
+Img.prototype = new Elem
+Img.prototype.draw = function(context){
+	context.drawImage(this.img, -this.img.naturalWidth/2, -this.img.naturalHeight/2);
 }
