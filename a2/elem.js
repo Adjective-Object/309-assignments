@@ -139,6 +139,7 @@ Player.prototype.update = function(input, tstep){
 function Ball(x, y, size, color){
 	Elem.call(this,x,y,size,size,color);
 
+	this.initmovespeed = 500
 	this.movespeed = 500;
 
 	this.velocity = new Point(0,0);
@@ -167,26 +168,26 @@ Ball.prototype.update = function(input, tstep){
 			this.goToAngle(Math.random()*Math.PI/2+Math.PI/4);
 		}
 
-		if(this.logic.x < 16){
-			this.logic.x = 16;
+		if(this.logic.x < extpadding){
+			this.logic.x = extpadding;
 			this.velocity.x = Math.abs(this.velocity.x);
 		}
 
-		if(this.logic.x + this.logic.width > canvaswidth - 16){
-			this.logic.x = canvaswidth - 16 - this.logic.width ;
+		if(this.logic.x + this.logic.width > canvaswidth - extpadding){
+			this.logic.x = canvaswidth - extpadding - this.logic.width ;
 			this.velocity.x = -Math.abs(this.velocity.x);
 		}
 
-		if(this.logic.y < 16){
+		if(this.logic.y < extpadding){
 			this.velocity.y = Math.abs(this.velocity.y);
-			this.logic.y = 16;
+			this.logic.y = extpadding;
 		}
 
 
-		if(this.logic.y > canvasheight - 32){
+		if(this.logic.y > canvasheight - extpadding){
 			gameLose();
 			this.velocity.y = - Math.abs(this.velocity.y);
-			this.logic.y = canvasheight - 32;
+			this.logic.y = canvasheight - extpadding;
 		}
 	}
 }
@@ -211,8 +212,11 @@ Ball.prototype.collidePaddle = function (paddle){
 		if(angle<Math.PI*1/8){
 			angle = Math.PI*1/8;
 		}
-		
-		console.log(angle/ Math.PI);
+
+		if(Math.abs((cbx-cx)/paddle.logic.width) < 0.25){
+			console.log("resetting movespeed");
+			this.movespeed = this.initmovespeed;
+		}
 
 		this.goToAngle(angle);
 	}
@@ -224,7 +228,8 @@ Ball.prototype.collidePaddle = function (paddle){
 Ball.prototype.collideAll = function(blocks){
 	var blockCollideCallback = function(block){
 		//TODO ball collission logic
-		this.movepeed = this.movespeed * 1.1;
+		this.movespeed = this.movespeed * 1.1;
+		console.log(this.movespeed);
 		
 		block.destroy( function(){checkWinstate} );
 
