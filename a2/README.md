@@ -1,18 +1,16 @@
 #Assignment 2: Breakout
-c3huangk/g3gohnic
+Group: `c3huangk` (Maxwell-Huang Hobbs) and `g3gohnic` (Nicholas Goh)
 
 
-AMI id: <not yet created>
-AWS account id: 616562643366
-Document Location: /home/ubuntu/309-assignments/a2/
+>An implementation of Atari's "Breakout" implemented using Canvas, created for Assignment 2 of CSC309 Fall 2014.
 
+++AMI ID:++ 
 
-works in chrome, untested in firefox. 
+++Source File Path:++
 
-The apache server should be running by default. If not, run
-`sudo apachectl start`
+++Apache Startup:++
 
-If for some reason the wrong assignment is being 
-showed  on the server, run
-`/home/ubuntu/309-assignments/a2/setupwww`
-which should copy the relevant files to the apache www/html folder.
+++Target Browser:++ **Google Chrome**
+
+##Documentation
+
