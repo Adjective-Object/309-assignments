@@ -112,13 +112,11 @@ Player.prototype.update = function(input, tstep){
 
 	this.logic.x += this.velocity * tstep/1000;
 
-	if (started){
-		if (input.down.left) {
-			this.velocity = Math.max(-this.maxmovespeed, this.velocity-this.movespeed);
-		}
-		if (input.down.right) {
-			this.velocity = Math.min(this.maxmovespeed, this.velocity+this.movespeed);
-		}
+	if (input.down.left) {
+		this.velocity = Math.max(-this.maxmovespeed, this.velocity-this.movespeed);
+	}
+	if (input.down.right) {
+		this.velocity = Math.min(this.maxmovespeed, this.velocity+this.movespeed);
 	}
 
 	this.velocity = (this.velocity - 
@@ -166,6 +164,8 @@ Ball.prototype.update = function(input, tstep){
 		if(!started && input.just.space){
 			started = true;
 			this.goToAngle(Math.random()*Math.PI/2+Math.PI/4);
+		} if (!started){
+			this.logic.x = player.logic.x + player.logic.width/2 - this.logic.width/2;
 		}
 
 		if(this.logic.x < extpadding){
