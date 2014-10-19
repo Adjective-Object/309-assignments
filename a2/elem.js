@@ -228,10 +228,10 @@ Ball.prototype.collidePaddle = function (paddle){
 Ball.prototype.collideAll = function(blocks){
 	var blockCollideCallback = function(block){
 		//TODO ball collission logic
-		this.movespeed = this.movespeed * 1.1;
+		this.movespeed = this.movespeed * 1.05;
 		console.log(this.movespeed);
 		
-		block.destroy( function(){checkWinstate} );
+		block.destroy( function(){checkWinstate()} );
 
 		cy = this.logic.y + this.logic.height/2
 		cby = block.logic.y + block.logic.height/2
@@ -360,8 +360,6 @@ function GameIncrementer(){
 	this.update = function(input, tstep){
 		if (input.just.space){
 			this.alive = false;
-			tilewidth = canvaswidth - 2*(paddingext) / fieldwidth
-
 			gameReset();
 		}
 	};

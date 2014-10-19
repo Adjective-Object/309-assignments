@@ -45,7 +45,7 @@ var elems, blocks, player, ball, scoreText
 								scale(200,1.5,1), 
 								shake(250, (score/50)*(Math.random()-Math.random()) ));
 		scoreText.animationtime = 0;
-		
+
 		if(block.graphic.color == tilecolors[0] && !width_halved){
 			width_halved = true;
 			player.logic.x = player.logic.x + player.logic.width/4;
@@ -78,14 +78,16 @@ var elems, blocks, player, ball, scoreText
 
 	function checkWinstate(){
 		console.log("checking winstate");
-		for (var i=0; i<blocks.length; i++) {
-			if (blocks[i].active){
-				return;
+		if(statechangehandled){
+			for (var i=0; i<blocks.length; i++) {
+				if (blocks[i].active){
+					return;
+				}
 			}
+			console.log("winstate!");
+			nextstate = STATE_WIN;
+			statechangehandled = false;
 		}
-		console.log("winstate!");
-		nextstate = STATE_WIN;
-		statechangehandled = false;
 	}
 
 
