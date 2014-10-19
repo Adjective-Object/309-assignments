@@ -108,6 +108,19 @@ function makeScoreText(){
 	return t2;
 }
 
+function makeLivesText(){
+	var t2 = new ElemText(
+			"Lives: 3",
+			canvaswidth-extpadding-72,
+			canvasheight-extpadding,
+			playercolor);
+		t2.fontsize = 24;
+		t2.textAlign = "center"
+
+	return t2;
+}
+
+
 function makeInitialScreen(elems){
 	/* UI */
 	//elems = elems.concat(makeUI());
@@ -115,6 +128,10 @@ function makeInitialScreen(elems){
 	scoreText.graphic.color = darktext
 	scoreText.graphic.alpha = 0;
 	elems.push(scoreText);
+
+
+	livesText = makeLivesText();
+	elems.push(livesText);
 
 	/* Initialize game elements */
 	blocks = makeField();

@@ -9,7 +9,7 @@ var STATE_WIN 	= 2;
 var lives = 3; // Number of lives a player starts with
 var started = false;
 var width_halved = false;
-var elems, blocks, player, ball, scoreText
+var elems, blocks, player, ball, scoreText, livesText
 
 	/* Initialize the canvas */2
 	canvas = document.getElementById("game");

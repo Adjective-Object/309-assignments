@@ -186,6 +186,9 @@ Ball.prototype.update = function(input, tstep){
 
 		if(this.logic.y > canvasheight - extpadding){
 			lives = lives - 1;
+			livesText.text = "Lives: " + lives;
+			livesText.animationtime = 0;
+			livesText.animation = scale(200,1.3,1);
 			if(lives === 0) { gameLose(); } // No more lives left, game over.
 			else {
 
