@@ -33,7 +33,8 @@ function Elem(x, y, width, height, color){
 }
 Elem.prototype = {
 	update: function(input, tstep){
-		// update animation
+
+		// Update animation
 		this.animationtime += tstep;
 		this.graphic = this.animation(
 			this.animationtime,
@@ -64,7 +65,7 @@ Elem.prototype = {
 			this.graphic.xscale,
 			this.graphic.yscale);
 
-		//actual drawing content
+		// Drawing content
 		this.draw(context);
 
 		context.scale(
@@ -97,15 +98,16 @@ Elem.prototype = {
 	}
 };
 
-
+//
 function Player(x, y, width, height, color){
-	Elem.call(this,x,y,width,height,color);
+	Elem.call(this, x , y, width, height, color);
 
 	this.velocity = 0;
 	this.maxmovespeed = 800;
 	this.movespeed = 200;
 	this.friction = 0.01;
 }
+
 Player.prototype = new Elem;
 Player.prototype.update = function(input, tstep){
 	Elem.prototype.update.call(this, input, tstep);
@@ -126,6 +128,7 @@ Player.prototype.update = function(input, tstep){
 		this.logic.x = 32;
 		this.velocity = 0;
 	}
+
 	if (this.logic.x > canvaswidth-this.logic.width-32){
 		this.logic.x = canvaswidth-this.logic.width-32;
 		this.velocity = 0;
@@ -142,11 +145,12 @@ function Ball(x, y, size, color){
 
 	this.velocity = new Point(0,0);
 }
+
 Ball.prototype = new Elem;
 
 Ball.prototype.goToAngle = function(rad){
-	this.velocity.x = Math.cos(rad)*this.movespeed;
-	this.velocity.y = -Math.sin(rad)*this.movespeed;
+	this.velocity.x = Math.cos(rad) * this.movespeed;
+	this.velocity.y = -Math.sin(rad) * this.movespeed;
 }
 
 Ball.prototype.update = function(input, tstep){
@@ -216,11 +220,11 @@ Ball.prototype.collidePaddle = function (paddle){
 			);
 
 		if(angle>Math.PI*7/8){
-			angle = Math.PI*7/8;
+			angle = Math.PI * 7/8;
 		}
 
-		if(angle<Math.PI*1/8){
-			angle = Math.PI*1/8;
+		if(angle < Math.PI * 1/8){
+			angle = Math.PI * 1/8;
 		}
 
 		if(Math.abs((cbx-cx)/paddle.logic.width) < 0.25){
@@ -237,7 +241,6 @@ Ball.prototype.collidePaddle = function (paddle){
 
 Ball.prototype.collideAll = function(blocks){
 	var blockCollideCallback = function(block){
-		//TODO ball collission logic
 		this.movespeed = this.movespeed * 1.05;
 		console.log(this.movespeed);
 		
@@ -246,9 +249,9 @@ Ball.prototype.collideAll = function(blocks){
 		cy = this.logic.y + this.logic.height/2
 		cby = block.logic.y + block.logic.height/2
 
-		if(cy<cby){
+		if(cy < cby){
 			this.velocity.y = -Math.abs(this.velocity.y);
-		} else if (cy>cby){
+		} else if (cy > cby){
 			this.velocity.y = Math.abs(this.velocity.y);
 		}
 
@@ -265,7 +268,7 @@ Ball.prototype.collideAll = function(blocks){
 		updateScore(block);
 	}
 
-	for (var i=0; i<blocks.length; i++){
+	for (var i=0; i < blocks.length; i++){
 		if(blocks[i].active){
 			this.collide(
 				blocks[i],
@@ -319,8 +322,8 @@ ElemText.prototype.destroy = function(){
 }
 
 
-function WowText(text,x,y,color){
-	ElemText.call(this, text,x,y,color);
+function WowText(text, x, y, color){
+	ElemText.call(this, text, x, y, color);
 }
 WowText.prototype = new ElemText;
 WowText.prototype.destroy = function(){
@@ -334,7 +337,7 @@ WowText.prototype.destroy = function(){
 }
 
 
-function DissapearText(text,x,y,color){
+function DissapearText(text, x, y, color){
 	ElemText.call(this, text, x, y, color);
 }
 DissapearText.prototype = new ElemText;
@@ -377,7 +380,7 @@ function GameIncrementer(){
 	this.render = function(canvas){};
 }
 
-function Sparker(x,y,color,life) {
+function Sparker(x, y, color, life) {
 	Elem.call(this, x, y, 16, 16, color);
 
 	this.animation = multiAnim( 
