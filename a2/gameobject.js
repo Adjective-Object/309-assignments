@@ -20,7 +20,8 @@ function Elem(x, y, width, height, color){
 	this.animation = nilanim;
 
 	this.update = function(input, tstep){
-		// update animation
+
+		// Update animation
 		this.animationtime += tstep;
 		this.graphic = this.animation(
 			this.animationtime,
@@ -35,8 +36,8 @@ function Elem(x, y, width, height, color){
 
 	this.render = function(context){
 		context.translate(
-			this.graphic.x+this.graphic.width/2, 
-			this.graphic.y+this.graphic.height/2);
+			this.graphic.x + this.graphic.width/2, 
+			this.graphic.y + this.graphic.height/2);
 		context.rotate(-this.graphic.rotation);
 
 		context.globalAlpha = this.graphic.alpha;
@@ -48,14 +49,14 @@ function Elem(x, y, width, height, color){
 		context.fillRect(
 			-w2,
 			-h2, 
-			this.graphic.width*this.graphic.scale, 
-			this.graphic.height*this.graphic.scale);
+			this.graphic.width * this.graphic.scale, 
+			this.graphic.height * this.graphic.scale);
 
 		context.globalAlpha = 1;
 
 		context.rotate(this.graphic.rotation);
 		context.translate(
-			-this.graphic.x-this.graphic.width/2,
-			-this.graphic.y-this.graphic.height/2);
+			-this.graphic.x - this.graphic.width/2,
+			-this.graphic.y - this.graphic.height/2);
 	};
 }

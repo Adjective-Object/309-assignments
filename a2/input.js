@@ -18,7 +18,7 @@ function InputTracker(disabled){
 
 	this.keydown = function(e){
 		//console.log("keydown", e.keyCode);
-		//left
+		// Left
 		if(e.keyCode == 37){
 			this.real.left = true;
 			this.buff.left = true;}
@@ -39,29 +39,29 @@ function InputTracker(disabled){
 
 	this.update = function(){
 		if (!this.enabled){
-			//held
+			// Held
 			this.down.left = false;
 			this.down.right = false;
 			this.down.space = false;
 
-			//just pressed
+			// Just pressed
 			this.just.left = false;
 			this.just.right = false;
 			this.just.space = false;
 			return;
 		}
 
-		//held
+		// Held
 		this.down.left = this.buff.left || this.real.left;
 		this.down.right = this.buff.right || this.real.right;
 		this.down.space = this.buff.space || this.real.space;
 
-		//just pressed
+		// Just pressed
 		this.just.left = this.buff.left;
 		this.just.right = this.buff.right;
 		this.just.space = this.buff.space;
 
-		//clear buffer;
+		// Clear buffer
 		this.buff.left  = false;
 		this.buff.right = false;
 		this.buff.space = false;
