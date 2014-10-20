@@ -18,3 +18,7 @@ which should copy the relevant files to the apache www/html folder.
 
 Target Browser: Google Chrome - untested for Mozilla Firefox.
 
+##Documentation
+
+The HTML front end of the project - stored in `index.html` - is a simple initialization of a canvas element with 
+id `game` as well as various control constants that we pass to the engine scripts.
