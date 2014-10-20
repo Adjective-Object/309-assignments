@@ -114,6 +114,7 @@ var elems, blocks, player, ball, scoreText, livesText
 		for (var i=0; i < lst.length; i++) {
 			if (!lst[i].alive){
 				lst.splice(i,1);
+				console.log(lst.length);
 			}
 		}
 		return lst
@@ -173,8 +174,8 @@ var elems, blocks, player, ball, scoreText, livesText
 				statechangehandled = true;
 			}
 
-			elems = stripDeadObjects(elems);
-			blocks = stripDeadObjects(blocks);
+			stripDeadObjects(elems);
+			stripDeadObjects(blocks);
 			updateGame(elems, input, newtime - lastupdate);
 
 
@@ -183,10 +184,8 @@ var elems, blocks, player, ball, scoreText, livesText
 			lastupdate = newtime;
 
 			/* cap fps at 60 */
-			setTimeout(mainloop, 
-				1000/120 - (new Date().getTime() - lastupdate));
-
 			renderGame(context, elems);
+			setTimeout(mainloop, 0);
 		}
 
 		mainloop();

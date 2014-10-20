@@ -23,7 +23,7 @@ function Elem(x, y, width, height, color){
 
 		// Update animation
 		this.animationtime += tstep;
-		this.graphic = this.animation(
+		this.animation(
 			this.animationtime,
 			this.graphic,
 			this.logic);
