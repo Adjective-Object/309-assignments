@@ -172,43 +172,46 @@ Ball.prototype.update = function(input, tstep){
 			this.logic.x = player.logic.x + player.logic.width/2 - this.logic.width/2;
 		}
 
-		if(this.logic.x < extpadding){
-			this.logic.x = extpadding;
-			this.velocity.x = Math.abs(this.velocity.x);
-		}
+		if (started) {
+			if(this.logic.x < extpadding){
+				this.logic.x = extpadding;
+				this.velocity.x = Math.abs(this.velocity.x);
+			}
 
-		if(this.logic.x + this.logic.width > canvaswidth - extpadding){
-			this.logic.x = canvaswidth - extpadding - this.logic.width ;
-			this.velocity.x = -Math.abs(this.velocity.x);
-		}
+			if(this.logic.x + this.logic.width > canvaswidth - extpadding){
+				this.logic.x = canvaswidth - extpadding - this.logic.width ;
+				this.velocity.x = -Math.abs(this.velocity.x);
+			}
 
-		if(this.logic.y < extpadding){
-			this.velocity.y = Math.abs(this.velocity.y);
-			this.logic.y = extpadding;
-		}
+			if(this.logic.y < extpadding){
+				this.velocity.y = Math.abs(this.velocity.y);
+				this.logic.y = extpadding;
+			}
 
-		// Ball enters dead zone
-		if(this.logic.y > canvasheight - extpadding){
-			lives = lives - 1;
-			livesText.text = "Lives: " + lives;
-			livesText.animationtime = 0;
-			livesText.animation = scale(200,1.3,1);
-			if(lives === 0) { gameLose(); } // No more lives left, game over.
-			else {
+			// Ball enters dead zone
+			if(this.logic.y > canvasheight - extpadding){
+				this.movespeed = this.initmovespeed;
+				lives = lives - 1;
+				livesText.text = "Lives: " + lives;
+				livesText.animationtime = 0;
+				livesText.animation = scale(200,1.3,1);
+				if(lives === 0) { gameLose(); } // No more lives left, game over.
+				else {
 
-				// Reset positions with same block state but minus one life
-				
-				started = false;
-				this.logic.y = canvasheight - 64 - 24; // Default y position, default x position is bound to !started
-				ball.velocity.x = 0;
-				ball.velocity.y = 0;
-			 } 
+					// Reset positions with same block state but minus one life
+					
+					started = false;
+					this.logic.y = canvasheight - 64 - 24; // Default y position, default x position is bound to !started
+					ball.velocity.x = 0;
+					ball.velocity.y = 0;
+				 } 
+			}
 		}
 	}
 }
 
 Ball.prototype.collidePaddle = function (paddle){
-	var paddleCollideCallback = function(paddle){
+	var paddleCollideCallback = function(paddle, l,r,t,b){
 		cx = this.logic.x + this.logic.width/2
 		cbx = paddle.logic.x + paddle.logic.width/2
 
@@ -229,8 +232,7 @@ Ball.prototype.collidePaddle = function (paddle){
 		}
 
 		if(Math.abs((cbx-cx)/paddle.logic.width) < 0.25){
-			console.log("resetting movespeed");
-			this.movespeed = this.initmovespeed;
+			this.movespeed = this.initmovespeed + (this.movespeed -this.initmovespeed)/2;
 		}
 
 		this.goToAngle(angle);
@@ -241,10 +243,10 @@ Ball.prototype.collidePaddle = function (paddle){
 }
 
 Ball.prototype.collideAll = function(blocks){
-	var blockCollideCallback = function(block){
-		this.movespeed = this.movespeed * 1.05;
-		console.log(this.movespeed);
-		
+	var blockCollideCallback = function(block,l,r,t,b){
+		this.movespeed = this.movespeed + 30;
+		this.goToAngle(Math.atan2(this.velocity.y, this.velocity.x))
+
 		block.destroy( function(){checkWinstate()} );
 
 		cy = this.logic.y + this.logic.height/2
@@ -294,7 +296,7 @@ Ball.prototype.collide = function(block, callback){
 	if ( (l&&r) && (t&&b) ){
 		//collision
 		
-		callback.call(this,block)
+		callback.call(this,block,l,r,t,b)
 	}
 }
 

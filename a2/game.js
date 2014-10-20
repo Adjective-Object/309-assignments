@@ -36,7 +36,7 @@ var elems, blocks, player, ball, scoreText, livesText
 
 	/* Global methods to be called by game objects*/
 	function updateScore(block) {
-		score += Math.floor((10 * ((canvasheight - block.logic.y)/canvasheight)));
+		score += block.pointValue;
 		//console.log("score", score);
 		scoreText.text = ""+score;
 		scoreText.fontsize = 24+(score/5);

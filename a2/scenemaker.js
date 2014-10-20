@@ -1,3 +1,9 @@
+function blockPointValue(y){
+	if (y < 2) return 7;
+	if (y < 4) return 5;
+	if (y < 6) return 3;
+	if (y < 8) return 1;
+}
 
 function makeField(){	
 	var elems = Array();
@@ -22,6 +28,8 @@ function makeField(){
 						10*Math.random()
 				));
 			
+			e.pointValue = blockPointValue(y);
+
 			elems.push(e);
 		}
 	}
