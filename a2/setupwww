@@ -1,0 +1,6 @@
+rm -rf /var/www/*
+mkdir /var/www/html
+cp ~/309-assignments/a2/* /var/www/html
+rm /var/www/html/setupwww
+echo "The contents of /var/www/html are:"
+ls /var/www/html
