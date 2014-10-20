@@ -3,7 +3,7 @@ c3huangk/g3gohnic
 
 An implementation of Atari's "Breakout" implemented using Canvas, created for Assignment 2 of CSC309 Fall 2014.
 
-AMI ID: <not yet created>  
+AMI ID: ami-48b83d20
 
 Source File:
 
@@ -34,10 +34,11 @@ Start, game, next level and game over are all controlled using a state system th
 
 > Use you imagination to design the look and feel of the game
 
-The look of the game is so imaginative wow.
+The look of the game is so imaginative wow. We have also added various graphical effects such as fade-ins and load-in movements to create a smoother user experience. 
 
 In order to improve game feel, we made two major modifications:
 
 In our version, the ball speeds up after each collision with a block, and has its speed reset on collision with the center of the paddle. We found a steady increase in ball speed to give a better overall game feel than a choppy increase at set intervals.
 
-We also added more player controls; The velocity and position of impact of the ball against the paddle both play into the angle it will make coming off of the paddle. This gives the players slightly more control over the path of the ball.
+We also added more player controls; The velocity and position of impact of the ball against the paddle both play into the angle it will make coming off of the paddle. This gives the players slightly more control over the path of the ball in a similar fashion to how top-spin is used to control the ball in Tennis.
+
