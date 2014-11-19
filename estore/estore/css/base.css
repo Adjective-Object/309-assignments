@@ -76,3 +76,36 @@ body{
 
 	overflow:hidden;
 }
+#errorbox{
+	text-align:center;
+	padding:32px;
+	color:red;
+}
+
+
+
+.readproduct{
+	width:400px;
+	margin-left:auto;
+	margin-right:auto;
+	padding:32px;
+	font-family: Roboto;
+}
+
+.readproduct img{
+	margin-left:auto;
+	margin-right:auto;
+}
+
+#cart_products .product{
+	padding:36px;
+}
+#cart_products .product h3{
+	font-weight: 600;
+}
+#cart_products .product a{
+	text-decoration: none;
+}
+#cart_products .product img{
+	height:120px;
+}

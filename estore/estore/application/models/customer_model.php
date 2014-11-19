@@ -25,7 +25,7 @@ class Customer_model extends CI_Model {
 		return $this->db->insert("customers", array(
 										'login' => $customer->login,
 										'first' => $customer->first,
-										'last' => $customer->2last,
+										'last' => $customer->last,
 										'password' => $customer->password,
 										'email' => $customer->email));
 	}
