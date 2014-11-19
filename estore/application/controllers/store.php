@@ -23,21 +23,30 @@ class Store extends CI_Controller {
     		$this->load->model('product_model');
     		$products = $this->product_model->getAll();
     		$data['products']=$products;
+    		$data['title']="list";
+
+			$this->load->view('templates/header', $data); // header
     		$this->load->view('product/list.php',$data);
+			$this->load->view('templates/footer', $data); // header
     }
     
     function newForm() {
+			$this->load->view('templates/header', NULL); // header
 	    	$this->load->view('product/newForm.php');
+			$this->load->view('templates/footer', NULL); // header
     }
     
 	function create() {
 		$this->load->library('form_validation');
+		$this->load->database(); 
 		$this->form_validation->set_rules('name','Name','required|is_unique[products.name]');
 		$this->form_validation->set_rules('description','Description','required');
 		$this->form_validation->set_rules('price','Price','required');
 		
 		$fileUploadSuccess = $this->upload->do_upload();
 		
+
+		$this->load->view('templates/header', NULL); // header
 		if ($this->form_validation->run() == true && $fileUploadSuccess) {
 			$this->load->model('product_model');
 
@@ -52,7 +61,7 @@ class Store extends CI_Controller {
 			$this->product_model->insert($product);
 
 			//Then we redirect to the index page again
-			redirect('store/index', 'refresh');
+			redirect('/', 'refresh');
 		}
 		else {
 			if ( !$fileUploadSuccess) {
@@ -63,20 +72,29 @@ class Store extends CI_Controller {
 			
 			$this->load->view('product/newForm.php');
 		}	
+		$this->load->view('templates/footer', NULL); // header
+
 	}
 	
 	function read($id) {
 		$this->load->model('product_model');
 		$product = $this->product_model->get($id);
+		
 		$data['product']=$product;
+		$data['title']=$product->name;
+
+		$this->load->view('templates/header', $data); // header
 		$this->load->view('product/read.php',$data);
+		$this->load->view('templates/footer', $data); // header
 	}
 	
 	function editForm($id) {
 		$this->load->model('product_model');
 		$product = $this->product_model->get($id);
 		$data['product']=$product;
+		$this->load->view('templates/header', NULL); // header
 		$this->load->view('product/editForm.php',$data);
+		$this->load->view('templates/footer', NULL); // header
 	}
 	
 	function update($id) {
@@ -95,7 +113,7 @@ class Store extends CI_Controller {
 			$this->load->model('product_model');
 			$this->product_model->update($product);
 			//Then we redirect to the index page again
-			redirect('store/index', 'refresh');
+			redirect('/', 'refresh');
 		}
 		else {
 			$product = new Product();
@@ -115,7 +133,7 @@ class Store extends CI_Controller {
 			$this->product_model->delete($id);
 		
 		//Then we redirect to the index page again
-		redirect('store/index', 'refresh');
+		redirect('/', 'refresh');
 	}
       
    

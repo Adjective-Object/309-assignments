@@ -1,23 +1,29 @@
 <h2>Product Table</h2>
 <?php 
-		echo "<p>" . anchor('store/newForm','Add New') . "</p>";
- 	  
-		echo "<table>";
-		echo "<tr><th>Name</th><th>Description</th><th>Price</th><th>Photo</th></tr>";
-		
+		echo "<p>" . anchor('/index.php/store/newForm','Add New') . "</p>";
+ 	  	echo "<link rel='stylesheet' type='text/css' href='/estore/css/list.css'>";
+
+
+		echo "<section id='products'>";
 		foreach ($products as $product) {
-			echo "<tr>";
-			echo "<td>" . $product->name . "</td>";
-			echo "<td>" . $product->description . "</td>";
-			echo "<td>" . $product->price . "</td>";
-			echo "<td><img src='" . base_url() . "images/product/" . $product->photo_url . "' width='100px' /></td>";
-				
-			echo "<td>" . anchor("store/delete/$product->id",'Delete',"onClick='return confirm(\"Do you really want to delete this record?\");'") . "</td>";
-			echo "<td>" . anchor("store/editForm/$product->id",'Edit') . "</td>";
-			echo "<td>" . anchor("store/read/$product->id",'View') . "</td>";
-				
-			echo "</tr>";
+			echo "<section class='product'>";
+
+			echo "<a href='index.php/store/read/". $product->id ."'>";
+			echo "<img src='" . base_url() . "images/product/" . $product->photo_url."' alt='product'/>";
+
+			echo "<h3>" . $product->name . " : $" . $product->price ."</h3>";
+			echo "</a>";
+			
+			echo "<a href= 'index.php?/store/delete/" .$product->id . "'" .
+					"' onClick='return confirm(\"Are you sure you want to delete this?\");'" .
+					">". 
+					"Delete </a>";
+			echo  anchor("index.php?/store/editForm/$product->id",'Edit') . "</td>";
+
+			echo "<p>" . $product->description . "</p>";
+			
+			echo "</section>";
 		}
-		echo "<table>";
+		echo "</section>";
 ?>	
 
