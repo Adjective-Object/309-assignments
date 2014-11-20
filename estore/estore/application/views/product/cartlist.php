@@ -4,7 +4,7 @@
 
 	$totalcost = 0;
 
-	echo "<section id='cart_products'>";
+	echo "<form id='cart_products' method='post' enctype='multipart/form-data'>";
 	foreach ($counts as $pid => $amt) {
 		$product = $this->product_model->get($pid);
 		$totalcost = $totalcost + $amt * $product->price;
@@ -13,27 +13,18 @@
 
 		echo "<a href='/estore/index.php/store/read/". $product->id ."'>";
 		echo "<img src='" . base_url() . "images/product/" . $product->photo_url . "' alt='product'/>";
-
 		echo "<h3>" . $product->name . " : $" . $product->price ."</h3>";
-
 		echo "</a>";
 
-		
-		echo "<p>" . $amt ." in cart</p>";
+		echo "<input type='number' name='amount_". $pid ."' value='".$amt."'></input><br>";
 
-		echo "<p>" . $product->description . "</p>";
-
-		echo "<a href='/estore/index.php/me/removecart/". $product->id ."'> remove 1 </a>";
-		
 		echo "</section>";
+		
 	}
-	echo "</section>";
+	echo '<section id="cart_summary">';
+		echo "Total Cost:" . $totalcost;
+		echo "<input type='submit' value='check out'/>";
+	echo '</section>';
+
+	echo "</form>";
 ?>	
-
-<section id="cart_summary">
-<?php 
-	echo "Total Cost:" . $totalcost;
-	echo "<a href='/estore/index.php/me/checkout'> check out </a>"
-?>
-</section>
-

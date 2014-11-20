@@ -46,19 +46,28 @@ class Me extends CI_Controller {
 		$this->load->model('product_model');
 		$data['cart'] = $this->session->userdata("cart");
 		$data['title'] = "cart";
+
+		if(sizeof($data['cart']) > 0 && isset($_POST["amount_".$data['cart'][0]])) {
+			$vals = array_unique($data['cart']);
+			$newcart = array();
+			foreach($vals as $id) {
+				for($i=0; $i<$_POST["amount_".$id]; $i++){
+					array_push($newcart,$id);
+				}
+			}
+			$this->session->set_userdata("cart", $newcart);
+			header("Location: /estore/index.php/me/checkout/".$id);
+			die();
+		}
+
 		$this->load->view('templates/header', $data); // header
-
 		$this->load->view('product/cartlist.php',$data);
-
-
 		$this->load->view('templates/footer'); // footer
 	}
 
 	function checkout() {
 		if (isset($_POST['card_number'])) {
 			$this->__doTransaction();
-			$data['card'] = array();
-			//TODO process transaction
 			header("Location: /estore/index.php/me/confirmed/".$id);
 			die();
 		}
@@ -78,9 +87,7 @@ class Me extends CI_Controller {
 		$data['cost'] = $totalcost;
 
 		$this->load->view('templates/header', $data); // header
-
 		$this->load->view('templates/checkout', $data); // header
-
 		$this->load->view('templates/footer'); // footer
 
 		
@@ -111,24 +118,43 @@ class Me extends CI_Controller {
 		$this->email->to($this->session->userdata('email'));
 		$this->email->subject("purchase receipt");
 
+		$msg = $this->__getReceipt();
+
+		$this->email->message($msg);
+		$this->email->send();
+	}
+
+	function confirmed(){
+		//do receipt
+		echo "<style>";
+		echo file_get_contents(getcwd()."/css/receipt.css");
+		echo "</style>";
+		echo $this->__getReceipt();
+		echo "<section id='afterbuttons'> ".
+				"<p> Please print this receipt with your browser (Ctrl+P in chrome/firefox) </p>" .
+				"<a href='/estore/' id='return'>click here after printing to return home</a> " .
+			"</section>";
+		//clear cart
+		$this->session->set_userdata('cart', array());
+	}
+
+	function __getReceipt(){
 		$this->load->model('product_model');
 
 		$totalcost = 0;
 		$amts = array_count_values($this->session->userdata('cart'));
-
-		$msg = "<p>This is a confirmation of purchase (receipt) <br> You purchased: <br></p>";
+		$msg = "<section id='receipt'><p>This is a confirmation of purchase (receipt) <br> You purchased: <br></p>";
 		
 		foreach ($amts as $pid => $amt) {
 			$product = $this->product_model->get($pid);
-			$msg = $msg . $amt . " of " . $product->name . "<br>";
+			$msg = $msg . "<p>" . $amt . " of " . $product->name . "    ($". $product->price ." each) </p>";
 			$totalcost = $totalcost + $amt * $product->price;
 		}
 
-		$msg = $msg . "for a grand total of " . $totalcost . "CDN.";
-
-
-		$this->email->message($msg);
-		$this->email->send();
+		$msg = $msg . "<p>for a grand total of $" . $totalcost . " CDN.</p>" .
+			"<p>Thank you for shopping with us</p>" .
+			"</section>";
+		return $msg;
 	}
 
 }
