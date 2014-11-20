@@ -6,6 +6,15 @@ if ($CI->session->userdata('logged_in')){
 }
 
 ?>
+<style>
+#register{
+  margin:36px;
+  width:200px;
+  margin-left:auto;
+  margin-right:auto;
+}
+</style>
+<section id="register">
 <h2>Register New User</h2>
 
 <style>
@@ -13,8 +22,7 @@ if ($CI->session->userdata('logged_in')){
 	
 </style>
 
-<?php 	
-	echo form_open("/index.php/register/register"); ?>
+<form action="/estore/index.php/register/register" method="post" enctype="multipart/form-data">
 		
 <p>
   <label for="login">Login:</label>
@@ -50,4 +58,5 @@ if ($CI->session->userdata('logged_in')){
   <input type="submit" class="greenButton" value="Submit" />
 </p>
 
- <?php echo form_close(); ?>
+</form>
+</section>

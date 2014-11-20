@@ -6,16 +6,6 @@ class Register extends CI_Controller {
     }
     
     function index() {
-        $data = array(
-            "title" => "Register New User");
-        $this->load->model('customer_model'); // Loads the related user model
-        $data['title']= 'Home';
-        $this->load->view('templates/header', $data);
-        $this->load->view('pages/register', $data);
-        $this->load->view('templates/footer', $data);
-    }
-    
-    function register() {
         $this->load->library('form_validation');
         $this->load->database();
         
@@ -27,7 +17,7 @@ class Register extends CI_Controller {
         $this->form_validation->set_rules('email', 'Email', 'required|is_unique[customers.email]|valid_email');
         
         if($this->form_validation->run() == true) {
-            $this->load->model('customer_model');
+            echo "UGH";
             
             $customer = new Customer();
             $customer->login = $this->input->get_post('login');
@@ -41,7 +31,8 @@ class Register extends CI_Controller {
         
         else {
             $data = array(
-                "title" => "Register New User");
+                "title" => "Register New User",
+                "error" => "Failed form Validation");
             $this->load->view('templates/header', $data);
             $this->load->view('pages/register', $data);
             $this->load->view('templates/footer', $data);

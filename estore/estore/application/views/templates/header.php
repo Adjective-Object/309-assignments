@@ -39,6 +39,11 @@
 			echo('<a href = "/estore/index.php/orders">Order List</a>');
 		}
 		?>
-
 		</nav>
 	</section>
+
+<?php
+if (isset($error)) {
+	echo "<section id='errorbox'>" . $error . "</section>";
+}
+?>
