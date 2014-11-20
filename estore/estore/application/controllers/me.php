@@ -8,11 +8,6 @@ class Me extends CI_Controller {
 		$this->load->library('session');
 	}
 
-	function index() {
-		$this->load->view('templates/header'); // header
-		$this->load->view('templates/footer'); // footer
-	}
-
 
 	function addcart($id) {
 		$this->load->model('product_model');
@@ -87,7 +82,7 @@ class Me extends CI_Controller {
 		$data['cost'] = $totalcost;
 
 		$this->load->view('templates/header', $data); // header
-		$this->load->view('templates/checkout', $data); // header
+		$this->load->view('templates/checkout', $data); // content
 		$this->load->view('templates/footer'); // footer
 
 		
@@ -95,6 +90,17 @@ class Me extends CI_Controller {
 
 
 	function __doTransaction(){
+		// insert into the database
+		$this->load->model('order_model');
+		$exp = explode("/", $_POST['card_expiration']);
+		$this->order_model->insert($this->session->userdata("uid"),
+									$this->__totalCost(),
+									$_POST['card_number'],
+									intval($exp[0]),
+									intval($exp[1])
+									);
+
+		// send the email
 		$this->load->library('email');
 		
 		$config = Array(
@@ -138,7 +144,7 @@ class Me extends CI_Controller {
 		$this->session->set_userdata('cart', array());
 	}
 
-	function __getReceipt(){
+	function __getReceipt() {
 		$this->load->model('product_model');
 
 		$totalcost = 0;
@@ -156,5 +162,19 @@ class Me extends CI_Controller {
 			"</section>";
 		return $msg;
 	}
+
+	function __totalCost() {
+		$this->load->model('product_model');
+		$amts = array_count_values($this->session->userdata('cart'));
+
+		$totalcost = 0;
+		foreach ($amts as $pid => $amt) {
+			$product = $this->product_model->get($pid);
+			$totalcost = $totalcost + $amt * $product->price;
+		}
+
+		return $totalcost;
+	}
+
 
 }

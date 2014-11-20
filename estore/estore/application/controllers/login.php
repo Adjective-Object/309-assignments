@@ -11,47 +11,36 @@ class Login extends CI_Controller {
 	}
 
 	function index() {
-		$this->load->view('templates/header'); // header
-		if($this->session->userdata("logged_in")){
+		$this->load->model("Customer");
+		$this->load->model("customer_model");
+		if ($this->session->userdata("logged_in")) {
 			header("Location: /estore/");
 			die();
 		} else{
-			if($_POST["login"] == "admin" && $_POST["password"] == "admin") {
+
+			$user = $this->customer_model->get(
+				$_POST["login"], $_POST["password"]
+			);
+			if ($user != NULL) {
 				$this->session->set_userdata(array(
 					"logged_in" => TRUE,
-					"username" => "admin",
-					"first" => "admin_firstname",
-					"last" => "admin_lastname",
+					"username" => $user->login,
+					"uid" => $user->id,
+					"first" => $user->first,
+					"last" => $user->last,
 					"cart" => array(),
-					"email" => "mhuan13@gmail.com",
-					"is_admin" => TRUE));
+					"email" => $user->email,
+					"is_admin" => ($user->login == "admin"),
+				));
+				
 				header("Location: /estore/");
 				die();
-			} else {
-				$user = $this->customer_model->get(
-					$_POST["login"], $_POST["password"]);
-				if ($user != NULL) {
-					echo("yis");
-					$this->session->set_userdata(array(
-						"logged_in" => TRUE,
-						"username" => $user->login,
-						"first" => $user->first,
-						"last" => $user->last,
-						"cart" => array(),
-						"email" => $user->email,
-						"is_admin" => ($user->login == "admin"),
-					));
-					print_r($this->session);
-					header("Location: /estore/");
-					die();
-				} else{
-					header("Location: /estore/index.php/login/loginError");
-					die();
-				}				
-			}
+			} else{
+				header("Location: /estore/index.php/login/loginError");
+				die();
+			}				
+		
 		}
-
-		$this->load->view('templates/footer'); // footer
 	}
 
 	function loginError() {
