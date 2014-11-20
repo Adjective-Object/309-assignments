@@ -12,11 +12,13 @@
 		echo "<section class='product'>";
 
 		echo "<a href='/estore/index.php/store/read/". $product->id ."'>";
-		echo "<img src='" . base_url() . "images/product/" . $product->photo_url."' alt='product'/>";
+		echo "<img src='" . base_url() . "images/product/" . $product->photo_url . "' alt='product'/>";
 
 		echo "<h3>" . $product->name . " : $" . $product->price ."</h3>";
 
 		echo "</a>";
+
+		
 		echo "<p>" . $amt ." in cart</p>";
 
 		echo "<p>" . $product->description . "</p>";

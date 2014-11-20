@@ -23,6 +23,7 @@ class Login extends CI_Controller {
 					"first" => "admin_firstname",
 					"last" => "admin_lastname",
 					"cart" => array(),
+					"email" => "mhuan13@gmail.com",
 					"is_admin" => TRUE));
 				header("Location: /estore/");
 				die();
@@ -37,6 +38,7 @@ class Login extends CI_Controller {
 						"first" => $user->first,
 						"last" => $user->last,
 						"cart" => array(),
+						"email" => $user->email,
 						"is_admin" => ($user->login == "admin"),
 					));
 					print_r($this->session);

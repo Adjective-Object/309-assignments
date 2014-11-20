@@ -4,6 +4,7 @@
 	<link rel="stylesheet" type="text/css" href="/estore/css/base.css">
 </head>
 <body>
+	<script type="text/javascript" src="/estore/js/jQuery.js"></script>
 	<section id="header">
 		<?php
 			if ($this->session->userdata("logged_in")){

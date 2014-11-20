@@ -55,24 +55,80 @@ class Me extends CI_Controller {
 	}
 
 	function checkout() {
+		if (isset($_POST['card_number'])) {
+			$this->__doTransaction();
+			$data['card'] = array();
+			//TODO process transaction
+			header("Location: /estore/index.php/me/confirmed/".$id);
+			die();
+		}
+
 		$data['cart'] = $this->session->userdata("cart");
 		$data['title'] = "checkout";
+		$this->load->model('product_model');
 
 		$totalcost = 0;
-		foreach ($counts as $pid => $amt) {
+		$amts = array_count_values($data['cart']);
+		
+		foreach ($amts as $pid => $amt) {
 			$product = $this->product_model->get($pid);
 			$totalcost = $totalcost + $amt * $product->price;
 		}
 
-		$data['cost'] = $cost;
+		$data['cost'] = $totalcost;
+
 		$this->load->view('templates/header', $data); // header
 
-		$this->load->view('product/cartlist.php',$data);
-
+		$this->load->view('templates/checkout', $data); // header
 
 		$this->load->view('templates/footer'); // footer
 
 		
+	}
+
+
+	function __doTransaction(){
+		$this->load->library('email');
+		
+		$config = Array(
+		    'protocol' => "smtp",
+		    'smtp_host' => "ssl://smtp.googlemail.com",
+		    'smtp_port' => 465,
+		    'smtp_user' => "309estore",
+		    'smtp_pass' => "itsanillusion",
+		    'mailtype'  => "html", 
+		    'charset'   => "iso-8859-1"
+		);
+		$this->load->library('email', $config);
+		$this->email->set_newline("\r\n");
+
+		date_default_timezone_set( 'America/New_York' );
+
+		$this->email->initialize($config);
+
+
+		$this->email->from("309estore@gmail.com", "EshopBot");
+		$this->email->to($this->session->userdata('email'));
+		$this->email->subject("purchase receipt");
+
+		$this->load->model('product_model');
+
+		$totalcost = 0;
+		$amts = array_count_values($this->session->userdata('cart'));
+
+		$msg = "<p>This is a confirmation of purchase (receipt) <br> You purchased: <br></p>";
+		
+		foreach ($amts as $pid => $amt) {
+			$product = $this->product_model->get($pid);
+			$msg = $msg . $amt . " of " . $product->name . "<br>";
+			$totalcost = $totalcost + $amt * $product->price;
+		}
+
+		$msg = $msg . "for a grand total of " . $totalcost . "CDN.";
+
+
+		$this->email->message($msg);
+		$this->email->send();
 	}
 
 }
