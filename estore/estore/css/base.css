@@ -136,6 +136,22 @@ body{
 	border-width: 0;
 }
 
+// Magic Green button in register.php
+.greenButton {
+    width:auto;
+    margin:10px 0 0 2px;
+    padding:3px 4px 3px 4px;
+    color:white;
+    background-color:#589d39;
+    outline:none;
+    border:1px solid #006600;
+    font-weight:bold;
+}
+.greenButton:active {
+    background-color:#006600;
+    padding:4px 3px 2px 5px;
+}
+
 
 a{
 	color:inherit;
