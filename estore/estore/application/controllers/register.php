@@ -11,9 +11,9 @@ class Register extends CI_Controller {
         $data = array(
             "title" => "Register New User");
         $this->load->model('customer_model'); // Loads the related user model
-        
+        $data['title']= 'Home';
         $this->load->view('templates/header', $data);
-        // Maybe I need a form view here...?
+        $this->load->view('pages/register', $data);
         $this->load->view('templates/footer', $data);
     }
     
@@ -45,7 +45,7 @@ class Register extends CI_Controller {
             $data = array(
                 "title" => "Register New User");
             $this->load->view('templates/header', $data);
-            // Maybe I need a form view here...?
+            $this->load->view('pages/register', $data);
             $this->load->view('templates/footer', $data);
         }
     }    
