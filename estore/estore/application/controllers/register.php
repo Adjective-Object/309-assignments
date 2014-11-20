@@ -44,5 +44,6 @@ class Register extends CI_Controller {
             $this->load->view('templates/header', $data);
             // Maybe I need a form view here...?
             $this->load->view('templates/footer', $data);
-    
+        }
+    }    
 }
