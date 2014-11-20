@@ -20,27 +20,17 @@
 	text-decoration: none;
 }
 
-
 .product a:first-of-type:hover{
 	color: #C02942;
-}
-
-.product a:not(:first-of-type) {
-	text-decoration:none;
-	margin:2px;
-	color:#EDEDED;
-	padding-left:4px;
-	padding-right:4px;
-	border-radius:2px;
-	background-color:black;
-	font-family: Roboto;
-}
-
-.product a:not(:first-of-type):hover {
-	background-color: #C02942;
 }
 
 .product img {
 	width:160px;
 
+}
+
+#newformlink{
+	display: inline-block;
+	text-align: center;
+	margin-top:16px;
 }

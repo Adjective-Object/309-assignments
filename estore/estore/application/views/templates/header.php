@@ -11,7 +11,6 @@
 			if ($this->session->userdata("logged_in")){
 				echo('
 					<section id="loginbox">
-						<a href="/estore/index.php/me/">' . $this->session->userdata("username") . '</a>
 						<a href=/estore/index.php/me/cart/> Cart </a>
 						<a href="/estore/index.php/login/logOut"> Log Out </a>');
 				echo('</section>');

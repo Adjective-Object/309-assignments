@@ -1,12 +1,15 @@
 <?php 
 
-		if($this->session->userdata('is_admin')){
-			echo "<p>" . anchor('/index.php/store/newForm','Add New') . "</p>";
- 	  	}
  	  	echo "<link rel='stylesheet' type='text/css' href='/estore/css/list.css'>";
 
 
 		echo "<section id='products'>";
+
+		if($this->session->userdata('is_admin')){
+			echo "<p>" . "<a href='/estore/index.php/store/newForm' class='butt' id='newformlink'> Add New </a>" . "</p>";
+ 	  	}
+
+
 		foreach ($products as $product) {
 			echo "<section class='product'>";
 
@@ -17,11 +20,11 @@
 			echo "</a>";
 
 			if($this->session->userdata('is_admin')){
-				echo "<a href= 'index.php?/store/delete/" .$product->id . "'" .
-						"' onClick='return confirm(\"Are you sure you want to delete this?\");'" .
+				echo "<a href= 'index.php/store/delete/" .$product->id . "' class='butt' " .
+						"onClick='return confirm(\"Are you sure you want to delete this?\");'" .
 						">". 
 						"Delete </a>";
-				echo  anchor("index.php?/store/editForm/$product->id",'Edit') . "</td>";				
+				echo "<a href='index.php/store/editForm/". $product->id ."' class='butt'> Edit </a>";				
 			}
 
 			echo "<p>" . $product->description . "</p>";

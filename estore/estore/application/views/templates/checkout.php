@@ -1,12 +1,13 @@
+<section id="centeredSection">
 <form id="cardform" action="/estore/index.php/me/checkout" method="post">
 <!-- http://stackoverflow.com/questions/469357/html-text-input-allow-only-numeric-input -->
-Card Number: <input type="text" 
+Card Number: <br><input type="text" 
 	id="card_number" 
 	name="card_number" 
 	maxlength="16" 
 	placeholder="0000000000000000"
 	onkeypress='return event.charCode >= 48 && event.charCode <= 57' ><br>
-Card Expiration Date (mmyy): <input type="text" 
+Card Expiration Date (mmyy): <br><input type="text" 
 	id="card_expiration" 
 	name="card_expiration" 
 	maxlength="5" 
@@ -67,3 +68,4 @@ Total Cost: <?php echo $cost?>
 
 	});
 </script>
+</section>

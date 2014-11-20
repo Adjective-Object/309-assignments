@@ -10,6 +10,7 @@
 body, html {
 	min-height: 100%;
 	min-width: 100%;
+	font-family: Roboto;
 }
 
 h1, h2, h3, h4, #footer, #header {
@@ -22,7 +23,6 @@ body{
 	background-color: #EDEDED;
 	padding-bottom:108px;
 	min-width:768px;
-	font-family:Roboto;
 }
 
 #header{
@@ -40,11 +40,7 @@ body{
 
 #header #loginbox{
 	float:right;
-}
 
-#header #loginbox a{
-	display:block;
-	text-align:right;
 }
 
 #header nav {
@@ -57,8 +53,8 @@ body{
 	font-size:16px;
 	font-weight: 400;
 	text-decoration: none;
-	margin-left:8px;
-	margin-right:8px;
+	margin-left: 8px;
+	margin-right: 8px;
 }
 
 #header a:hover {
@@ -83,80 +79,30 @@ body{
 
 	overflow:hidden;
 }
-#errorbox{
-	text-align:center;
-	padding:32px;
-	color:red;
-}
 
 
-
-.readproduct{
-	width:400px;
-	margin-left:auto;
-	margin-right:auto;
-	padding:32px;
+.butt {
+	display:inline-block;
+	text-decoration:none;
+	margin:2px;
+	color:#EDEDED;
+	padding-left:4px;
+	padding-right:4px;
+	border-radius:2px;
+	background-color:black;
 	font-family: Roboto;
+
 }
 
-.readproduct img{
+.butt:hover{
+	background-color: #C02942;
+}
+
+
+#centeredSection{
+	width:400px;
+	display:block;
 	margin-left:auto;
 	margin-right:auto;
-}
-
-#cart_products .product{
-	clear:left;
-	padding:36px;
-	display:block;
-}
-#cart_products .product h3{
-	font-weight: 600;
-}
-#cart_products .product a{
-	text-decoration: none;
-}
-#cart_products .product img{
-	width:120px;
-	float:left;margin-right:16px;
-}
-
-#cart_summary{
-	display:block;
-	text-align:center;
-	padding:36px;
-	clear:left;
-}
-
-#cart_summary input[type="submit"]{
-	background-color: #C02942;
-	text-decoration: none;
-	color:white;
 	padding:8px;
-	margin:20px;
-	border-width: 0;
-}
-
-// Magic Green button in register.php
-.greenButton {
-    width:auto;
-    margin:10px 0 0 2px;
-    padding:3px 4px 3px 4px;
-    color:white;
-    background-color:#589d39;
-    outline:none;
-    border:1px solid #006600;
-    font-weight:bold;
-}
-.greenButton:active {
-    background-color:#006600;
-    padding:4px 3px 2px 5px;
-}
-
-
-a{
-	color:inherit;
-}
-
-a:hover{
-	color:#C02942;
 }

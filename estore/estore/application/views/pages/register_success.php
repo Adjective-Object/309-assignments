@@ -1,0 +1,1 @@
+Registered successfully! you can now log in with the box in the top right.

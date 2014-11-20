@@ -1,10 +1,11 @@
+
+<section id="centeredSection">
 <h2>New Product</h2>
 
 <style>
 	input { display: block;}
 	
 </style>
-
 <?php 
 	echo "<p>" . anchor('/','Back') . "</p>";
 	
@@ -34,4 +35,5 @@
 	echo form_submit('submit', 'Create');
 	echo form_close();
 ?>	
+</section>
 

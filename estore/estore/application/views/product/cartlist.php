@@ -1,5 +1,31 @@
-<?php 
+<style>
+#centeredSection {
+	display:block;
+	padding:8px;
+}
 
+#centeredSection img{
+	width: 100px;
+	float:left;
+	margin:8px;
+}
+
+#centeredSection .product{
+	clear:left;
+	margin:8px;
+}
+
+#centeredSection .product h3 {
+	font-weight:600px;
+}
+
+#cart_summary{
+	text-align:center;
+	clear:left;
+}
+</style>
+<section id="centeredSection">
+<?php 
 	$counts = array_count_values($cart);
 
 	$totalcost = 0;
@@ -22,9 +48,10 @@
 		
 	}
 	echo '<section id="cart_summary">';
-		echo "Total Cost:" . $totalcost;
+		echo "Total Cost:" . $totalcost , "<br>";
 		echo "<input type='submit' value='check out'/>";
 	echo '</section>';
 
 	echo "</form>";
 ?>	
+</section>
