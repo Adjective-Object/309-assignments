@@ -28,7 +28,7 @@
 			echo "Id";
 
 			echo "</td><td>";
-			echo "Customer Id";
+			echo "Cust. Id";
 
 			echo "</td><td>";
 			echo "Date";
@@ -74,6 +74,12 @@
 
 				echo "</td><td>";
 				echo $order->creditcard_year;
+
+				echo "</td><td>";
+				echo "<a href='/estore/index.php/orders/contents/".$order->id."'>Contents</a>";
+
+				echo "</td><td>";
+				echo "<a href='/estore/index.php/orders/delete/".$order->id."'>Delete</a>";
 
 				echo "</td></tr>";
 			}

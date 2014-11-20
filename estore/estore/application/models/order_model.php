@@ -24,6 +24,10 @@ class Order_model extends CI_Model {
 										'creditcard_year' => $year 
 									));
 	}	
+
+	function delete($id) {
+		return $this->db->delete("orders", array('id' => $id ));
+	}
 	
 }
 ?>

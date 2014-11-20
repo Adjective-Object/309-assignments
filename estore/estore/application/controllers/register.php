@@ -8,6 +8,8 @@ class Register extends CI_Controller {
     }
     
     function index() {
+        $data = array(
+            "title" => "Register New User");
         $this->load->model('customer_model'); // Loads the related user model
         
         $this->load->view('templates/header', $data);
@@ -36,11 +38,12 @@ class Register extends CI_Controller {
             $customer->last = $this->input->get_post('last');
             $customer->email = $this->input->get_post('email');
             $customer->id = $uid_count;
-            $uid_count++
+            $uid_count++;
         }
         
         else {
-            // Failed. Reload the views
+            $data = array(
+                "title" => "Register New User");
             $this->load->view('templates/header', $data);
             // Maybe I need a form view here...?
             $this->load->view('templates/footer', $data);

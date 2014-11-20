@@ -6,6 +6,12 @@ class Customer_model extends CI_Model {
     }
 
 
+    function getAll() {  
+		$query = $this->db->get('customers');
+		return $query->result('Customer');
+	}  
+
+
 	function get($username, $password)
 	{
 		$query = $this->db->get_where('customers',

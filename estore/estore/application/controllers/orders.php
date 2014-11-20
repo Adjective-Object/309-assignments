@@ -24,4 +24,26 @@ class Orders extends CI_Controller {
 		$this->load->view('templates/footer'); // footer
 	}
 
+	function delete($id) {
+		$this->load->model('order_model');
+    	$this->order_model->delete($id);
+    	header("Location: /estore/index.php/orders");
+    	die();
+	}
+
+	function contents($order_id){
+		$this->load->model('order_items_model');
+    	$items = $this->order_items_model->get($order_id);
+
+		$data = array("title" => "Items for Order ".$id,
+						"items" => $items);
+
+		$this->load->view('templates/header', $data); // header
+
+    	$this->load->view('orders/items_list.php',$data);
+
+		$this->load->view('templates/footer'); // footer
+    	
+	}
+
 }
