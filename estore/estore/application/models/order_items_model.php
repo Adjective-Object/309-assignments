@@ -5,21 +5,20 @@ class Order_items_model extends CI_Model {
     	parent::__construct();
     }
     
-    function insert($order_items) {
+    function insert($pid, $oid, $amt) {
         return $this->db->insert("order_items", array(
-                                                'id' => $order_items->id,
-                                                'order_id' => $order_items->order_id,
-                                                'product_id' => $order_items->product_id,
-                                                'quantity' => $order_items->quantity));
+                                                'order_id' => $oid,
+                                                'product_id' => $pid,
+                                                'quantity' => $amt));
     }
 
 
-    function get($order_id) {
+    function getBy($order_id) {
         $query = $this->db->get_where('order_items', array('order_id' => $order_id));
         if($query->num_rows() == 0) {
             return NULL;
         }
-        return $query->row(0,'Order Items');
+        return $query->result('Order_items');
     }	
 	
 }

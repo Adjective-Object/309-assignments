@@ -93,12 +93,20 @@ class Me extends CI_Controller {
 		// insert into the database
 		$this->load->model('order_model');
 		$exp = explode("/", $_POST['card_expiration']);
-		$this->order_model->insert($this->session->userdata("uid"),
+		$oid = $this->order_model->insert($this->session->userdata("uid"),
 									$this->__totalCost(),
 									$_POST['card_number'],
 									intval($exp[0]),
 									intval($exp[1])
 									);
+
+		$amts = array_count_values($this->session->userdata("cart"));
+		$this->load->model('Order_items');
+		$this->load->model('order_items_model');
+
+		foreach($amts as $pid => $amt){
+			$this->order_items_model->insert($pid, $oid, $amt);
+		}		
 
 		// send the email
 		$this->load->library('email');

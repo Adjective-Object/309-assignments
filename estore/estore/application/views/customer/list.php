@@ -11,7 +11,7 @@
 		padding:8px;
 	}
 </style>
-<h1 id="finalizedoders">Finalized Orders</h1>
+<h1 id="finalizedoders">Customers</h1>
 <?php 
 
 		if(!$this->session->userdata('is_admin')){
@@ -62,8 +62,10 @@
 					echo "</td><td>";
 					echo $customer->email;
 
-					echo "</td><td>";
-					echo "<a href='/estore/index.php/customers/delete/".$customer->id."'>Delete</a>";
+					if($customer->login != "admin"){
+						echo "</td><td>";
+						echo "<a href='/estore/index.php/customers/delete/".$customer->id."'>Delete</a>";
+					}
 				echo "</td></tr>";
 
 					

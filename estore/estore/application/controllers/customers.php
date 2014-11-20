@@ -25,10 +25,15 @@ class Customers extends CI_Controller {
 	}
 
 	function delete($id) {
+		$this->load->model('Customer');
 		$this->load->model('customer_model');
-    	$this->customer_model->delete($id);
-    	header("Location: /estore/index.php/customers");
+    	$admin = $this->customer_model->get("admin", "admin");
+	    if ($id != $admin->id){
+	    	$this->customer_model->delete($id);    		
+    	}
+       	header("Location: /estore/index.php/customers");
     	die();
+
 	}
 
 }

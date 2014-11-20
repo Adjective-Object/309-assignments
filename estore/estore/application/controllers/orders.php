@@ -32,11 +32,14 @@ class Orders extends CI_Controller {
 	}
 
 	function contents($order_id){
+		$this->load->model('Order_items');
 		$this->load->model('order_items_model');
-    	$items = $this->order_items_model->get($order_id);
+		$this->load->model('product_model');
+    	$items = $this->order_items_model->getBy($order_id);
 
-		$data = array("title" => "Items for Order ".$id,
-						"items" => $items);
+		$data = array("title" => "Items for Order ".$order_id,
+						"items" => $items,
+						"order_id" => $order_id);
 
 		$this->load->view('templates/header', $data); // header
 
